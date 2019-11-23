@@ -14,7 +14,8 @@ import java.util.Set;
 
 @Entity
 //@Table
-public class Authority  extends IdEntity implements GrantedAuthority,Serializable {
+public class Authority  extends IdEntity
+        implements GrantedAuthority,Serializable {
 
 //    @Id
 //    @GeneratedValue(strategy= GenerationType.AUTO)
