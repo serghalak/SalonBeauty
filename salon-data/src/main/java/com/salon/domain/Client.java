@@ -19,6 +19,9 @@ public class Client extends Person {
     @OneToMany(mappedBy = "client")
     private List<Appointment> appointments=new ArrayList<>();
 
+    @OneToOne(mappedBy = "client")
+    private User user;
+
 //    public Long getId() {
 //        return id;
 //    }
