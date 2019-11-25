@@ -1,79 +1,85 @@
 package com.salon.services.impl;
 
 
-//import com.salon.common.Utils;
-//import com.salon.domain.User;
-//import com.salon.repository.impl.UserRepo;
-//import com.salon.service.UserService;
-//import com.salon.shared.dto.UserDto;
-//import org.springframework.beans.BeanUtils;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.ArrayList;
-//import java.util.List;
+import com.salon.common.Utils;
+import com.salon.domain.User;
+import com.salon.repository.UserRepo;
+import com.salon.services.UserService;
+import com.salon.dto.UserDto;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
-//@Service
-public class UserServiceImpl /*implements UserService*/ {
-//    @Autowired
-//    private UserRepo userRepo;
-//
-//    @Autowired
-//    private Utils utils;
-//
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class UserServiceImpl implements UserService {
+    //@Autowired
+    private UserRepo userRepo;
+
+    @Autowired
+    private Utils utils;
+
 //    @Autowired
 //    private BCryptPasswordEncoder bCryptPasswordEncoder;
 //
-//    @Override
-//    public UserDto createUser(UserDto user) {
-//
+
+
+    public UserServiceImpl(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
+
+    @Override
+    public UserDto createUser(UserDto user) {
+
 //        if(userRepo.findUserByEmail(user.getEmail())!= null){
 //            throw new RuntimeException("user with email: " + user.getEmail()
 //                    +" is already exists. Change your email address");
 //        }
-//        if(userRepo.findUserByUserName(user.getUserName())!= null){
-//            throw new RuntimeException("user with nick: " + user.getUserName()
-//                    +" is already exists. Change your nickname address");
-//        }
+        if(userRepo.findUserByUserName(user.getUserName())!= null){
+            throw new RuntimeException("user with nick: " + user.getUserName()
+                    +" is already exists. Change your nickname address");
+        }
 //        if(user.getPhoneNumber() != null && userRepo.findUserByPhoneNumber(user.getPhoneNumber())!=null ){
 //            throw new RuntimeException("user with phone number: " + user.getPhoneNumber()
 //                    +" is already exists. Change your phone number");
 //        }
-//
-//        User userCreate=new User();
-//        BeanUtils.copyProperties(user,userCreate);
-//
-//        userCreate.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//        userCreate.setUserId(utils.generateUserId(30));
-//        userCreate.setUserName(utils.getRandomUserName());
-//
-//        User userDb=userRepo.save(userCreate);
-//        UserDto userReturn=new UserDto();
-//
-////        if(userDb==null){
-////            throw new Exception("Cannot create user");
-////        }
-//
-//        BeanUtils.copyProperties(userDb,userReturn);
-//        return userReturn;
-//    }
-//
-//    @Override
-//    public UserDto getUser(String email) {
-//        User userByEmail = userRepo.findUserByEmail(email);
-//        if(userByEmail==null){
-//            throw new UsernameNotFoundException("User with email: "+email+" not found");
+
+        User userCreate=new User();
+        BeanUtils.copyProperties(user,userCreate);
+
+        //userCreate.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userCreate.setUserId(utils.generateUserId(30));
+        userCreate.setUserName(utils.getRandomUserName());
+
+        User userDb=userRepo.save(userCreate);
+        UserDto userReturn=new UserDto();
+
+//        if(userDb==null){
+//            throw new Exception("Cannot create user");
 //        }
-//
-//        //UserDetails userDetails = loadUserByUsername(email);
-//        UserDto userDto=new UserDto();
-//        BeanUtils.copyProperties(userByEmail,userDto);
-//        return userDto;
-//    }
-//
+
+        BeanUtils.copyProperties(userDb,userReturn);
+        return userReturn;
+    }
+
+    @Override
+    public UserDto getUser(String userName) {
+        User userByUserName = userRepo.findUserByUserName(userName);
+        if(userByUserName==null){
+            throw new UsernameNotFoundException("User with email: "+userName+" not found");
+        }
+
+        //UserDetails userDetails = loadUserByUsername(email);
+        UserDto userDto=new UserDto();
+        BeanUtils.copyProperties(userByUserName,userDto);
+        return userDto;
+    }
+
 //    @Override
 //    public List<UserDto> getListUsers() {
 //        Iterable<User> users = userRepo.findAll();
@@ -145,15 +151,16 @@ public class UserServiceImpl /*implements UserService*/ {
 //        //return null;
 //    }
 //
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//
-//        User userByEmail = userRepo.findUserByEmail(email);
-//        if(userByEmail==null){
-//            throw new UsernameNotFoundException("User with email: "+email+" not found");
-//        }
-//        return new org.springframework.security.core.userdetails.User(
-//         userByEmail.getEmail(),userByEmail.getPassword(),new ArrayList<>());
-//        //return userByEmail;
-//    }
+    @Override
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+
+        User userByUserName = userRepo.findUserByUserName(userName);
+        if(userByUserName==null){
+            throw new UsernameNotFoundException("User with user name: "+userName+" not found");
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+         userByUserName.getUserName(),userByUserName.getPassword(),new ArrayList<>());
+        //return userByEmail;
+    }
 }

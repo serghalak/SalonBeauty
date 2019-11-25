@@ -22,8 +22,12 @@ import java.util.UUID;
 @RequestMapping("api/users")
 public class UserController {
 
-    @Autowired
+    //@Autowired
     private UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public /*List<UserResponse>*/String getAllListUsers(){

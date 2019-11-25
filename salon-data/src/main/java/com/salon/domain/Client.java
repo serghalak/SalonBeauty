@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 //@Table
-public class Client extends Person {
+public class Client extends PersonExtId {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO)
