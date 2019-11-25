@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 //        }
         if(userRepo.findUserByUserName(user.getUserName())!= null){
             throw new RuntimeException("user with nick: " + user.getUserName()
-                    +" is already exists. Change your nickname address");
+                    +" is already exists. Change your nickname!!!");
         }
 //        if(user.getPhoneNumber() != null && userRepo.findUserByPhoneNumber(user.getPhoneNumber())!=null ){
 //            throw new RuntimeException("user with phone number: " + user.getPhoneNumber()

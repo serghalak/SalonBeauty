@@ -7,6 +7,7 @@ public class UserDto implements Serializable {
 
     private Long id;
     private  String userId;
+    private String userName;
     private String firstName;
     private String lastName;
     private String email;
@@ -33,7 +34,7 @@ public class UserDto implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    private String userName;
+
 
     public String getUserName() {
         return userName;
@@ -57,6 +58,10 @@ public class UserDto implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public Boolean getClient() {
+        return client;
     }
 
     public String getFirstName() {

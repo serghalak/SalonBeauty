@@ -6,6 +6,7 @@ import com.salon.domain.PersonExt;
 public class UserRequest /*extends Person *//*PersonExt*/ {
 
     private String userId;
+    private String userName;
     private String firstName;
     private String lastName;
     private String email;
@@ -28,6 +29,14 @@ public class UserRequest /*extends Person *//*PersonExt*/ {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getFirstName() {
