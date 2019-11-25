@@ -7,9 +7,11 @@ package com.salon.controllers;
 //import org.springframework.beans.BeanUtils;
 //import org.springframework.beans.factory.annotation.Autowired;
 import com.salon.dto.UserDto;
+import com.salon.services.UserService;
 import com.salon.ui.model.request.UserRequest;
 import com.salon.ui.model.response.UserResponse;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,8 +22,8 @@ import java.util.UUID;
 @RequestMapping("api/users")
 public class UserController {
 
-//    @Autowired
-//    private UserService userService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public /*List<UserResponse>*/String getAllListUsers(){
@@ -48,9 +50,9 @@ public class UserController {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userRequest,userDto);
 
-        //UserDto createdUser=userService.createUser(userDto);
+        UserDto createdUser=userService.createUser(userDto);
 
-        //BeanUtils.copyProperties(createdUser,userResponse);
+        BeanUtils.copyProperties(createdUser,userResponse);
 
 //        userResponse.setFirstName(userRequest.getFirstName());
 //        userResponse.setLastName(userRequest.getLastName());
