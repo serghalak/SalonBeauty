@@ -69,6 +69,10 @@ public class UserServiceImpl implements UserService {
 //        }
 
         BeanUtils.copyProperties(userDb,userReturn);
+        if(user.isClient()){
+            BeanUtils.copyProperties(userDb.getClient(),userReturn);
+        }
+
         return userReturn;
     }
 

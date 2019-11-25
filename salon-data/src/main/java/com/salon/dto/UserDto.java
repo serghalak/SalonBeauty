@@ -15,7 +15,7 @@ public class UserDto implements Serializable {
     private String activateCode;
     //private String emailStatus;
     private Boolean active=false;
-    private Boolean isClient=true;
+    private Boolean client=true;
 
 //    private String password;//plain text
 //    private String encryptedPassword;
@@ -131,11 +131,20 @@ public class UserDto implements Serializable {
         this.active = active;
     }
 
-    public Boolean getClient() {
-        return isClient;
+//    public Boolean getClient() {
+//        return isClient;
+//    }
+//
+//    public void setClient(Boolean client) {
+//        isClient = client;
+//    }
+
+
+    public Boolean isClient() {
+        return client;
     }
 
     public void setClient(Boolean client) {
-        isClient = client;
+        this.client = client;
     }
 }
