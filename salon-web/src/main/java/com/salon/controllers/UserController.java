@@ -6,10 +6,15 @@ package com.salon.controllers;
 //import com.salon.ui.model.response.UserResponse;
 //import org.springframework.beans.BeanUtils;
 //import org.springframework.beans.factory.annotation.Autowired;
+import com.salon.dto.UserDto;
+import com.salon.ui.model.request.UserRequest;
+import com.salon.ui.model.response.UserResponse;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/users")
@@ -36,18 +41,24 @@ public class UserController {
     }
 
     @PostMapping
-    public /*UserResponse*/String createUser(
-            /*@RequestBody UserRequest userRequest*/){
-//        UserResponse userResponse=new UserResponse();
-//        UserDto userDto = new UserDto();
-//        BeanUtils.copyProperties(userRequest,userDto);
-//
-//        UserDto createdUser=userService.createUser(userDto);
-//
-//        BeanUtils.copyProperties(createdUser,userResponse);
-//
-//        return userResponse;
-        return "post some user !!!...";
+    public UserResponse createUser(
+            @RequestBody UserRequest userRequest){
+
+        UserResponse userResponse=new UserResponse();
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(userRequest,userDto);
+
+        //UserDto createdUser=userService.createUser(userDto);
+
+        //BeanUtils.copyProperties(createdUser,userResponse);
+
+//        userResponse.setFirstName(userRequest.getFirstName());
+//        userResponse.setLastName(userRequest.getLastName());
+//        userResponse.setEmail(userRequest.getEmail());
+//        userResponse.setPhoneNumber(userRequest.getPhoneNumber());
+//        userResponse.setUserId(UUID.randomUUID().toString());
+        return userResponse;
+        //return "post some user !!!...";
     }
 
     @PutMapping

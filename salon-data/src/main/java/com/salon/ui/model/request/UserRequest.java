@@ -2,20 +2,20 @@ package com.salon.ui.model.request;
 
 public class UserRequest {
 
-    private String userId;
+    //private String userId;
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
     private String password;
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+//    public String getUserId() {
+//        return userId;
+//    }
+//
+//    public void setUserId(String userId) {
+//        this.userId = userId;
+//    }
 
     public String getFirstName() {
         return firstName;
