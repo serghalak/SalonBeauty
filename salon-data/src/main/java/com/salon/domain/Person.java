@@ -3,7 +3,7 @@ package com.salon.domain;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class Person /*extends IdEntity*/{
+public class Person extends IdEntity{
 
     private String firstName;
     private String lastName;

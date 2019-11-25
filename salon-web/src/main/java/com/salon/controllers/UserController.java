@@ -6,6 +6,8 @@ package com.salon.controllers;
 //import com.salon.ui.model.response.UserResponse;
 //import org.springframework.beans.BeanUtils;
 //import org.springframework.beans.factory.annotation.Autowired;
+import com.salon.domain.Client;
+import com.salon.domain.Person;
 import com.salon.dto.UserDto;
 import com.salon.services.UserService;
 import com.salon.ui.model.request.UserRequest;
@@ -24,6 +26,8 @@ public class UserController {
 
     //@Autowired
     private UserService userService;
+
+
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -53,6 +57,15 @@ public class UserController {
         UserResponse userResponse=new UserResponse();
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userRequest,userDto);
+        System.out.println("-------------------------------");
+//        Client client=null;
+//
+//        if(userRequest.isClient()){
+//            client=new Client();
+//            //client.setFirstName(userRequest.getFirstName());
+//            BeanUtils.copyProperties(userDto,client);
+//
+//        }
 
         UserDto createdUser=userService.createUser(userDto);
 

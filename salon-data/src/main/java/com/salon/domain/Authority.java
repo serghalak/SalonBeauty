@@ -5,7 +5,7 @@ package com.salon.domain;
 
 //import org.springframework.security.core.GrantedAuthority;
 
-import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 //@Table
 public class Authority  extends IdEntity
-        implements GrantedAuthority,Serializable {
+        /*implements GrantedAuthority,Serializable*/ {
 
 //    @Id
 //    @GeneratedValue(strategy= GenerationType.AUTO)
@@ -52,7 +52,7 @@ public class Authority  extends IdEntity
         this.users = users;
     }
 
-    @Override
+    //@Override
     public String getAuthority() {
         return getRoleName();
     }

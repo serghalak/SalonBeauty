@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Master extends PersonExtId {
+public class Master extends Person /*PersonExtId*/ {
 
 
 

@@ -2,15 +2,16 @@ package com.salon.services.impl;
 
 
 import com.salon.common.Utils;
+import com.salon.domain.Client;
 import com.salon.domain.User;
 import com.salon.repository.UserRepo;
 import com.salon.services.UserService;
 import com.salon.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.userdetails.UsernameNotFoundException;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,10 +52,14 @@ public class UserServiceImpl implements UserService {
 
         User userCreate=new User();
         BeanUtils.copyProperties(user,userCreate);
-
+        userCreate.setPassword(user.getPassword());
         //userCreate.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userCreate.setUserId(utils.generateUserId(30));
         userCreate.setUserName(utils.getRandomUserName());
+
+        Client client=new Client();
+        BeanUtils.copyProperties(user,client);
+        userCreate.setClient(client);
 
         User userDb=userRepo.save(userCreate);
         UserDto userReturn=new UserDto();
@@ -71,7 +76,8 @@ public class UserServiceImpl implements UserService {
     public UserDto getUser(String userName) {
         User userByUserName = userRepo.findUserByUserName(userName);
         if(userByUserName==null){
-            throw new UsernameNotFoundException("User with email: "+userName+" not found");
+            //throw new UsernameNotFoundException("User with email: "+userName+" not found");
+            throw new RuntimeException("User with user name: "+userName+" not found");
         }
 
         //UserDetails userDetails = loadUserByUsername(email);
@@ -151,16 +157,16 @@ public class UserServiceImpl implements UserService {
 //        //return null;
 //    }
 //
-    @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-
-        User userByUserName = userRepo.findUserByUserName(userName);
-        if(userByUserName==null){
-            throw new UsernameNotFoundException("User with user name: "+userName+" not found");
-        }
-
-        return new org.springframework.security.core.userdetails.User(
-         userByUserName.getUserName(),userByUserName.getPassword(),new ArrayList<>());
-        //return userByEmail;
-    }
+    //@Override
+//    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+//
+//        User userByUserName = userRepo.findUserByUserName(userName);
+//        if(userByUserName==null){
+//            throw new UsernameNotFoundException("User with user name: "+userName+" not found");
+//        }
+//
+//        return new org.springframework.security.core.userdetails.User(
+//         userByUserName.getUserName(),userByUserName.getPassword(),new ArrayList<>());
+//        //return userByEmail;
+//    }
 }

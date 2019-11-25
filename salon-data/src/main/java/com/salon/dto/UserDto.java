@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public class UserDto implements Serializable {
 
-    private long id;
+    private Long id;
     private  String userId;
     private String firstName;
     private String lastName;
@@ -15,6 +15,7 @@ public class UserDto implements Serializable {
     private String activateCode;
     //private String emailStatus;
     private Boolean active=false;
+    private Boolean isClient=true;
 
 //    private String password;//plain text
 //    private String encryptedPassword;
@@ -42,11 +43,11 @@ public class UserDto implements Serializable {
         this.userName = userName;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -128,5 +129,13 @@ public class UserDto implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Boolean getClient() {
+        return isClient;
+    }
+
+    public void setClient(Boolean client) {
+        isClient = client;
     }
 }
