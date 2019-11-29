@@ -2,6 +2,7 @@ package com.salon.services.impl;
 
 
 import com.salon.common.Utils;
+import com.salon.domain.Authority;
 import com.salon.domain.Client;
 import com.salon.domain.User;
 import com.salon.repository.UserRepo;
@@ -55,10 +56,20 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user,userCreate);
         //userCreate.setPassword(user.getPassword());
         userCreate.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userCreate.setUserId(utils.generateUserId(30));
-        userCreate.setUserName(utils.getRandomUserName());
 
-        Client client=new Client();
+        userCreate.setUserId(utils.generateUserId(30));
+        //userCreate.setUserName(utils.getRandomUserName());
+        Client client=null;
+        Authority authority=null;
+        if(user.isClient()){
+            client=new Client();
+            authority=new Authority();
+            authority.setId(1L);
+            authority.setRoleName("USER");
+            userCreate.setAuthority(authority);
+        }
+
+
         BeanUtils.copyProperties(user,client);
         userCreate.setClient(client);
 
@@ -72,6 +83,8 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(userDb,userReturn);
         if(user.isClient()){
             BeanUtils.copyProperties(userDb.getClient(),userReturn);
+
+
         }
 
         return userReturn;
