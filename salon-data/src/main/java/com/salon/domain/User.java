@@ -2,10 +2,10 @@ package com.salon.domain;
 
 //import org.springframework.data.annotation.Id;
 
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-//import org.springframework.security.core.userdetails.UserDetails;
+
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 //@Table
-public class User extends IdEntity /*implements UserDetails*/ {
+public class User extends IdEntity implements UserDetails {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO)
@@ -149,39 +149,39 @@ public class User extends IdEntity /*implements UserDetails*/ {
     /*---------------------------------------------------------------------------*/
 
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        List<GrantedAuthority> auth=new ArrayList<>();
-//        auth.add(getAuthority());
-//        return auth;
-//    }
-//
-//
-//
-//    @Override
-//    public String getUsername() {
-//        return getUserName();
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true ;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return isActive();
-//    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> auth=new ArrayList<>();
+        auth.add( getAuthority());
+        return auth;
+    }
+
+
+
+    @Override
+    public String getUsername() {
+        return getUserName();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true ;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isActive();
+    }
 
 
 }

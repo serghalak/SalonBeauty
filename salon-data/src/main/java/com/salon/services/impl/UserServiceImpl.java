@@ -9,9 +9,10 @@ import com.salon.services.UserService;
 import com.salon.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.core.userdetails.UserDetails;
-//import org.springframework.security.core.userdetails.UsernameNotFoundException;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,17 +22,17 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     //@Autowired
     private UserRepo userRepo;
-
-    @Autowired
+    //@Autowired
     private Utils utils;
-
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
-//
+    //@Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-    public UserServiceImpl(UserRepo userRepo) {
+    public UserServiceImpl(UserRepo userRepo, Utils utils
+            , BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepo = userRepo;
+        this.utils = utils;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -52,8 +53,8 @@ public class UserServiceImpl implements UserService {
 
         User userCreate=new User();
         BeanUtils.copyProperties(user,userCreate);
-        userCreate.setPassword(user.getPassword());
-        //userCreate.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        //userCreate.setPassword(user.getPassword());
+        userCreate.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userCreate.setUserId(utils.generateUserId(30));
         userCreate.setUserName(utils.getRandomUserName());
 
@@ -161,16 +162,16 @@ public class UserServiceImpl implements UserService {
 //        //return null;
 //    }
 //
-    //@Override
-//    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-//
-//        User userByUserName = userRepo.findUserByUserName(userName);
-//        if(userByUserName==null){
-//            throw new UsernameNotFoundException("User with user name: "+userName+" not found");
-//        }
-//
-//        return new org.springframework.security.core.userdetails.User(
-//         userByUserName.getUserName(),userByUserName.getPassword(),new ArrayList<>());
-//        //return userByEmail;
-//    }
+    @Override
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+
+        User userByUserName = userRepo.findUserByUserName(userName);
+        if(userByUserName==null){
+            throw new UsernameNotFoundException("User with user name: "+userName+" not found");
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+         userByUserName.getUserName(),userByUserName.getPassword(),new ArrayList<>());
+        //return userByEmail;
+    }
 }
