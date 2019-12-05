@@ -109,4 +109,9 @@ public class UserController {
 //        userService.deleteUser(userDto);
         return "delete delete some user ...";
     }
+
+    @PutMapping("/put")
+    public String testPut(){
+        return "from /put";
+    }
 }
