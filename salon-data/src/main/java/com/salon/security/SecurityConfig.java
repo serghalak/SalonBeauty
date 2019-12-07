@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
@@ -18,14 +19,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
+    private final SecurityProperty securityProperty;
 
 
     public SecurityConfig(UserService userService,
-                          BCryptPasswordEncoder bCryptPasswordEncoder) {
+                          BCryptPasswordEncoder bCryptPasswordEncoder,SecurityProperty securityProperty) {
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-
+        this.securityProperty=securityProperty;
     }
 
 
@@ -34,19 +35,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                     .authorizeRequests()
-                .antMatchers("/","/api/users","/api/users/").permitAll()
+                .antMatchers("/","/api/users","/api/users/","/login").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     /*.addFilter(new AuthenticationFilter(authenticationManager()));*/
-                    .addFilter(getAuthenticationFilter());
-                //.and().addFilter());
-//                .and().addFilter(getAuthenticationFilter())
-//                    .
-                /*.and()
-
-                .addFilter(new AuthorizationFilter(authenticationManager()))
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)*/
+                    .addFilter(getAuthenticationFilter())
+                    .addFilter(new AuthorizationFilter(authenticationManager(),securityProperty))
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
        /* http.headers().frameOptions().disable();*/
     }
@@ -58,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     public AuthenticationFilter getAuthenticationFilter()throws Exception{
-        final AuthenticationFilter filter=new AuthenticationFilter(authenticationManager());
+        final AuthenticationFilter filter=new AuthenticationFilter(authenticationManager(),securityProperty);
         filter.setFilterProcessesUrl("/api/users/login");
         return filter;
     }

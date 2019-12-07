@@ -9,6 +9,7 @@ import com.salon.services.UserService;
 import com.salon.ui.model.request.UserRegisterData;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,12 +25,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+
+
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager) {
+    private  SecurityProperty securityProperty;
+
+
+    public AuthenticationFilter(AuthenticationManager authenticationManager , SecurityProperty securityProperty) {
         this.authenticationManager = authenticationManager;
+        this.securityProperty=securityProperty;
     }
 
     @Override
@@ -40,8 +47,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         try{
             //ObjectMapper convert JSON from stream to java object
             UserRegisterData creds=new ObjectMapper().readValue(request.getInputStream(), UserRegisterData.class);
-            System.out.println("UsernamePasswordAuthenticationFilter->attemptAuthentication: "
-                    + creds.getUserName()+": " + creds.getPassword());
+            //System.out.println(">>>>>>>>>>>>>>>>>>> " + securityProperty.getHeaderString());
+            //System.out.println("UsernamePasswordAuthenticationFilter->attemptAuthentication: "
+            //        + creds.getUserName()+": " + creds.getPassword());
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             creds.getUserName(),
@@ -65,14 +73,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String userName = ((org.springframework.security.core.userdetails.User)authResult.getPrincipal()).getUsername();
         String token= Jwts.builder()
                 .setSubject(userName)
-                .setExpiration(new Date(System.currentTimeMillis()+ SecurityConstants.EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET)
+                .setExpiration(new Date(System.currentTimeMillis() + securityProperty.getExperitionTime()))
+                .signWith(SignatureAlgorithm.HS512, securityProperty.getTokenSecret())
                 .compact();
         UserService userService= (UserService) SpringApplicationContext.getBean("userServiceImpl");
         UserDto userDto=userService.getUser(userName);
         String userId = userDto.getUserId();
 
-        response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX+token);
+        response.addHeader(securityProperty.getHeaderString(), securityProperty.getTokenPrefix()+token);
 
         response.addHeader("UserID",userId);
     }
