@@ -91,6 +91,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto getUserByUserId(String userId) {
+
+        User byUserId = userRepo.findByUserId(userId);
+        if(byUserId==null){
+            throw new RuntimeException("User with userId not found");
+        }
+        UserDto userDto=new UserDto();
+        BeanUtils.copyProperties(byUserId,userDto);
+        if(byUserId.getClient()!=null){
+            BeanUtils.copyProperties(byUserId.getClient(),userDto);
+        }else{
+            BeanUtils.copyProperties(byUserId.getMaster(),userDto);
+        }
+
+        return userDto;
+
+    }
+
+    @Override
     public UserDto getUser(String userName) {
         User userByUserName = userRepo.findUserByUserName(userName);
         if(userByUserName==null){
@@ -104,21 +123,26 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-//    @Override
-//    public List<UserDto> getListUsers() {
-//        Iterable<User> users = userRepo.findAll();
-////        //System.out.println(new ArrayList<User>());
-//        List<UserDto>returnListUsers=new ArrayList<>();
-////
-//        for (User user:users){
-//            UserDto userDto=new UserDto();
-//            //System.out.println(user);
-//            BeanUtils.copyProperties(user,userDto);
-//            returnListUsers.add(userDto);
-//        }
-//        return returnListUsers;
-//  //      return null;
-//    }
+    @Override
+    public List<UserDto> getListUsers() {
+        Iterable<User> users = userRepo.findAll();
+//        //System.out.println(new ArrayList<User>());
+        List<UserDto>returnListUsers=new ArrayList<>();
+//
+        for (User user:users){
+            UserDto userDto=new UserDto();
+            //System.out.println(user);
+            if(user.getClient()!=null){
+                BeanUtils.copyProperties(user.getClient(),userDto);
+            }else {
+                BeanUtils.copyProperties(user.getMaster(),userDto);
+            }
+            BeanUtils.copyProperties(user,userDto);
+            returnListUsers.add(userDto);
+        }
+        return returnListUsers;
+  //      return null;
+    }
 //
 //    @Override
 //    public UserDto updateUser(UserDto user) {

@@ -12,10 +12,14 @@ import com.salon.dto.UserDto;
 import com.salon.services.UserService;
 import com.salon.ui.model.request.UserRequest;
 import com.salon.ui.model.response.UserResponse;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,24 +37,35 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public /*List<UserResponse>*/String getAllListUsers(){
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+    public List<UserResponse> getAllListUsers(){
 
-//        List<UserResponse>userResponseList=new ArrayList<>();
-//        List<UserDto> listUsers = userService.getListUsers();
-//        if(listUsers.isEmpty() || listUsers==null){
-//            throw new RuntimeException("List of users is empty");
-//        }
-//        for (UserDto userDto:listUsers){
-//            UserResponse userResponse=new UserResponse();
-//            BeanUtils.copyProperties(userDto,userResponse);
-//            userResponseList.add(userResponse);
-//        }
-//        return userResponseList;
-        return "get some user !!!...";
+        List<UserResponse>userResponseList=new ArrayList<>();
+        List<UserDto> listUsers = userService.getListUsers();
+        if(listUsers.isEmpty() || listUsers==null){
+            throw new RuntimeException("List of users is empty");
+        }
+        for (UserDto userDto:listUsers){
+            UserResponse userResponse=new UserResponse();
+            BeanUtils.copyProperties(userDto,userResponse);
+            userResponseList.add(userResponse);
+        }
+        return userResponseList;
+        //return "get some user !!!...";
     }
 
-    @PostMapping
+    @GetMapping(value = "/{userId}"
+            ,produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+    public UserResponse getUserByUserId(@PathVariable("userId")String userId){
+        UserDto userDb=userService.getUserByUserId(userId);
+        UserResponse userResponse=new UserResponse();
+        BeanUtils.copyProperties(userDb,userResponse);
+        return userResponse;
+    }
+
+    @PostMapping(
+            consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
+            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public UserResponse createUser(
             @RequestBody UserRequest userRequest){
 
@@ -80,7 +95,7 @@ public class UserController {
         //return "post some user !!!...";
     }
 
-    @PutMapping
+    @PutMapping(produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public /*UserResponse*/String updateUser(
             /*@RequestBody UserRequest userRequest*/){
 
@@ -99,7 +114,7 @@ public class UserController {
         return "put update some user ...";
     }
 
-    @DeleteMapping
+    @DeleteMapping(produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public /*void*/String deleteUser(/*@RequestBody UserRequest user*/){
 //        if(user==null){
 //            throw new RuntimeException("user is wronge");

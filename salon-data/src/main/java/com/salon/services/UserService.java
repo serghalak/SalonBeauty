@@ -13,8 +13,9 @@ import com.salon.dto.UserDto;
 public interface UserService extends UserDetailsService {
     UserDto createUser(UserDto user);
     UserDto getUser(String userName);
+    UserDto getUserByUserId(String userId);
 //    UserDto getUserByUserName(String userName);
-//    List<UserDto> getListUsers();
+    List<UserDto> getListUsers();
 //    UserDto updateUser(UserDto user);
 //    void deleteUser(UserDto user);
 }

@@ -1,5 +1,7 @@
 package com.salon;
 
+import com.salon.security.AppProperties;
+import com.salon.security.SecurityProperty;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,5 +23,11 @@ public class SalonBeautyApplication {
 	public SpringApplicationContext springApplicationContext(){
 		return new SpringApplicationContext();
 	}
+
+//	@Bean
+//	public AppProperties getAppProperties(){
+//		return new AppProperties();
+//	}
+
 
 }
