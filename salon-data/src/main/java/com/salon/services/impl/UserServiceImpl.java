@@ -143,43 +143,59 @@ public class UserServiceImpl implements UserService {
         return returnListUsers;
   //      return null;
     }
-//
-//    @Override
-//    public UserDto updateUser(UserDto user) {
-//        if(user == null){
-//            throw new RuntimeException("user is null");
-//        }
-//
-//
-//        User userDb =userRepo.findUserByUserId(user.getUserId());
-//        if(userDb == null){
-//            throw new RuntimeException("User "+user.getUserName()+" not found in db");
-//        }
-//
-//
-//        userDb.setFirstName(user.getFirstName());
-//        userDb.setLastName(user.getLastName());
-//        userDb.setEmail(user.getEmail());
-//        if(user.getPassword()==null
-//                || user.getPassword().isEmpty()
-//                || user.getPassword()==""
-//                || user.getPassword().equals("")){
-//
-//        }else{
-//            userDb.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//        }
-//        //BeanUtils.copyProperties(user,userDb);
-//
-//        User updatedUser = userRepo.save(userDb);
-//        if(updatedUser==null){
-//            throw new RuntimeException("User: " + user.getUserName()+" did not updated");
-//        }
-//        UserDto returnUserDto=new UserDto();
-//        BeanUtils.copyProperties(updatedUser,returnUserDto);
-//        return returnUserDto;
-//
-//        //return null;
-//    }
+
+    @Override
+    public UserDto updateUser(UserDto user) {
+        if(user == null){
+            throw new RuntimeException("user is null");
+        }
+
+
+        User userDb =userRepo.findUserByUserId(user.getUserId());
+        if(userDb == null){
+            throw new RuntimeException("User "+user.getUserName()+" not found in db");
+        }
+
+
+        if(user.isClient()){
+            userDb.getClient().setFirstName(user.getFirstName());
+            userDb.getClient().setLastName(user.getLastName());
+            userDb.getClient().setEmail(user.getEmail());
+            userDb.getClient().setPhoneNumber(user.getPhoneNumber());
+        }else{
+            userDb.getMaster().setFirstName(user.getFirstName());
+            userDb.getMaster().setLastName(user.getLastName());
+            userDb.getMaster().setEmail(user.getEmail());
+            userDb.getMaster().setPhoneNumber(user.getPhoneNumber());
+        }
+
+        if(user.getPassword()==null
+                || user.getPassword().isEmpty()
+                || user.getPassword()==""
+                || user.getPassword().equals("")){
+
+        }else{
+            userDb.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
+        //BeanUtils.copyProperties(user,userDb);
+        userDb.setUserName(user.getUserName());
+        User updatedUser = userRepo.save(userDb);
+        if(updatedUser==null){
+            throw new RuntimeException("User: " + user.getUserName()+" did not updated");
+        }
+        UserDto returnUserDto=new UserDto();
+        BeanUtils.copyProperties(updatedUser,returnUserDto);
+
+        if(user.getClient()!=null){
+            BeanUtils.copyProperties(updatedUser.getClient(),returnUserDto);
+        }else{
+            BeanUtils.copyProperties(updatedUser.getMaster(),returnUserDto);
+        }
+
+        return returnUserDto;
+
+        //return null;
+    }
 //
 //    @Override
 //    public void deleteUser( UserDto user) {

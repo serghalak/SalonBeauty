@@ -96,22 +96,22 @@ public class UserController {
     }
 
     @PutMapping(produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public /*UserResponse*/String updateUser(
-            /*@RequestBody UserRequest userRequest*/){
+    public UserResponse  updateUser(
+            @RequestBody UserRequest userRequest){
 
-//        if(userRequest==null){
-//            throw new RuntimeException("User for update is wronge");
-//        }
-//        UserDto userDto=new UserDto();
-//        BeanUtils.copyProperties(userRequest,userDto);
-//        UserDto userUpdated= userService.updateUser(userDto);
-//        if(userUpdated==null){
-//            throw new RuntimeException("Error during updating");
-//        }
-//        UserResponse userReturn=new UserResponse();
-//        BeanUtils.copyProperties(userUpdated,userReturn);
-//        return userReturn;
-        return "put update some user ...";
+        if(userRequest==null){
+            throw new RuntimeException("User for update is wronge");
+        }
+        UserDto userDto=new UserDto();
+        BeanUtils.copyProperties(userRequest,userDto);
+        UserDto userUpdated= userService.updateUser(userDto);
+        if(userUpdated==null){
+            throw new RuntimeException("Error during updating");
+        }
+        UserResponse userReturn=new UserResponse();
+        BeanUtils.copyProperties(userUpdated,userReturn);
+        return userReturn;
+        //return "put update some user ...";
     }
 
     @DeleteMapping(produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
