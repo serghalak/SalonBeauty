@@ -36,7 +36,7 @@ public class User extends IdEntity implements UserDetails {
 
 
 
-//    @Column(nullable = false,length =100 )
+    //    @Column(nullable = false,length =100 )
 //    private String password;
 
 

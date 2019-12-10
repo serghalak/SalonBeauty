@@ -14,6 +14,7 @@ public interface UserRepo extends CrudRepository<User, Long> {
     User findUserByUserId(String userId);
     User findUserByUserName(String userName);
     User findByUserId(String userId);
+    User findByActivateCode(String code);
     //User findUserByPhoneNumber(String phoneNumber);
 
 }

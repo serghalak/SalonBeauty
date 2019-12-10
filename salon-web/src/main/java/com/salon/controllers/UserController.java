@@ -125,6 +125,22 @@ public class UserController {
         return "delete delete some user ...";
     }
 
+
+    @GetMapping("/activate/{code}")
+    public UserResponse activate(@PathVariable("code")String code){
+        UserResponse userResponse=new UserResponse();
+        if(code==null){
+            throw new RuntimeException("code activation is wronge");
+        }
+
+        UserDto userByCodeActivate = userService.getUserByCodeActivate(code);
+        BeanUtils.copyProperties(userByCodeActivate,userResponse);
+
+        return userResponse;
+    }
+
+
+
     @PutMapping("/put")
     public String testPut(){
         return "from /put";

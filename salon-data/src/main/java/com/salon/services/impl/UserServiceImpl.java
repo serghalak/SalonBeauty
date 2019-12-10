@@ -1,6 +1,7 @@
 package com.salon.services.impl;
 
 
+import com.salon.common.MailSender;
 import com.salon.common.Utils;
 import com.salon.domain.Authority;
 import com.salon.domain.Client;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,6 +29,10 @@ public class UserServiceImpl implements UserService {
     private Utils utils;
     //@Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private MailSender mailSender;
+
 
 
     public UserServiceImpl(UserRepo userRepo, Utils utils
@@ -70,10 +76,25 @@ public class UserServiceImpl implements UserService {
         }
 
 
+        userCreate.setActivateCode(UUID.randomUUID().toString());
+
         BeanUtils.copyProperties(user,client);
         userCreate.setClient(client);
 
         User userDb=userRepo.save(userCreate);
+
+        //if email is exist
+        if(user.isClient()){
+            if (userCreate.getClient().getEmail() !=null){
+                String message=String.format("Hello, %s! \n"+
+                    "Welcome to Salon Beauty. Please, visit next link: http://localhost:8080/api/users/activate/%s",
+                        userDb.getClient().getFirstName(),
+                        userDb.getActivateCode());
+                mailSender.send(userCreate.getClient().getEmail(),"Activation code",message);
+            }
+        }
+
+
         UserDto userReturn=new UserDto();
 
 //        if(userDb==null){
@@ -215,6 +236,36 @@ public class UserServiceImpl implements UserService {
 //        //return null;
 //    }
 //
+
+
+    @Override
+    public UserDto getUserByCodeActivate(String code) {
+        User byActivateCode = userRepo.findByActivateCode(code);
+        if(byActivateCode==null){
+            throw new RuntimeException("Activation code is wrong");
+        }
+
+        byActivateCode.setActivateCode("");
+        byActivateCode.setActive(true);
+        User userActivated=userRepo.save(byActivateCode);
+        if(userActivated==null){
+            throw new RuntimeException("Error during activating");
+        }
+
+
+        UserDto userDto=new UserDto();
+
+        BeanUtils.copyProperties(userActivated,userDto);
+        if(userActivated.getClient()!=null){
+            BeanUtils.copyProperties(userActivated.getClient(),userDto);
+        }else{
+            BeanUtils.copyProperties(userActivated.getMaster(),userDto);
+        }
+
+
+        return userDto;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 
