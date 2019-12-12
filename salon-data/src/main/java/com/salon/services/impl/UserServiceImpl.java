@@ -11,6 +11,8 @@ import com.salon.services.UserService;
 import com.salon.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,7 +35,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MailSender mailSender;
 
-
+    @Autowired
+    private MessageSource messageSource;
 
     public UserServiceImpl(UserRepo userRepo, Utils utils
             , BCryptPasswordEncoder bCryptPasswordEncoder) {
@@ -50,8 +53,14 @@ public class UserServiceImpl implements UserService {
 //                    +" is already exists. Change your email address");
 //        }
         if(userRepo.findUserByUserName(user.getUserName())!= null){
-            throw new RuntimeException("user with nick: " + user.getUserName()
-                    +" is already exists. Change your nickname!!!");
+//            throw new RuntimeException("user with nick: " + user.getUserName()
+//                    +" is already exists. Change your nickname!!!");
+            String[] params=new String[]{user.getUserName()};
+
+            throw new RuntimeException(
+                    messageSource.getMessage("registration.user.exists"
+                            ,params
+                            , LocaleContextHolder.getLocale()));
         }
 //        if(user.getPhoneNumber() != null && userRepo.findUserByPhoneNumber(user.getPhoneNumber())!=null ){
 //            throw new RuntimeException("user with phone number: " + user.getPhoneNumber()
@@ -86,11 +95,17 @@ public class UserServiceImpl implements UserService {
         //if email is exist
         if(user.isClient()){
             if (userCreate.getClient().getEmail() !=null){
-                String message=String.format("Hello, %s! \n"+
-                    "Welcome to Salon Beauty. Please, visit next link: http://localhost:8080/api/users/activate/%s",
-                        userDb.getClient().getFirstName(),
-                        userDb.getActivateCode());
-                mailSender.send(userCreate.getClient().getEmail(),"Activation code",message);
+                String[] params=new String[]{userDb.getClient().getFirstName()
+                        ,userDb.getActivateCode()};
+                String messageLink=messageSource.getMessage("registration.user.emaillink"
+                        ,params,LocaleContextHolder.getLocale());
+//                String message=String.format("Hello, %s! \n"+
+//                    "Welcome to Salon Beauty. Please, visit next link: http://localhost:8080/api/users/activate/%s",
+//                        userDb.getClient().getFirstName(),
+//                        userDb.getActivateCode());
+                String messageSubject=messageSource.getMessage("registration.user.activationcode"
+                        ,null,LocaleContextHolder.getLocale());
+                mailSender.send(userCreate.getClient().getEmail(),messageSubject,messageLink);
             }
         }
 
@@ -116,7 +131,10 @@ public class UserServiceImpl implements UserService {
 
         User byUserId = userRepo.findByUserId(userId);
         if(byUserId==null){
-            throw new RuntimeException("User with userId not found");
+
+            String message=messageSource.getMessage("user.usernotfound"
+                    ,null,LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
         }
         UserDto userDto=new UserDto();
         BeanUtils.copyProperties(byUserId,userDto);
@@ -134,8 +152,12 @@ public class UserServiceImpl implements UserService {
     public UserDto getUser(String userName) {
         User userByUserName = userRepo.findUserByUserName(userName);
         if(userByUserName==null){
+            String[] params=new String[]{userName};
+            String message = messageSource.getMessage("user.usernamenotfound"
+                    ,params,LocaleContextHolder.getLocale());
             //throw new UsernameNotFoundException("User with email: "+userName+" not found");
-            throw new RuntimeException("User with user name: "+userName+" not found");
+            //throw new RuntimeException("User with user name: "+userName+" not found");
+            throw new RuntimeException(message);
         }
 
         //UserDetails userDetails = loadUserByUsername(email);
@@ -168,13 +190,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(UserDto user) {
         if(user == null){
-            throw new RuntimeException("user is null");
+            //throw new RuntimeException("user is null");
+            String message = messageSource.getMessage("user.usernamenotfound"
+                    ,null,LocaleContextHolder.getLocale());
+            //throw new UsernameNotFoundException("User with email: "+userName+" not found");
+            //throw new RuntimeException("User with user name: "+userName+" not found");
+            throw new RuntimeException(message);
         }
 
 
         User userDb =userRepo.findUserByUserId(user.getUserId());
         if(userDb == null){
-            throw new RuntimeException("User "+user.getUserName()+" not found in db");
+            //throw new RuntimeException("User "+user.getUserName()+" not found in db");
+
+            String[] params=new String[]{user.getUserName()};
+            String message = messageSource.getMessage("user.usernamenotfound"
+                    ,params,LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
+            //throw new UsernameNotFoundException("User with email: "+userName+" not found");
+            //throw new RuntimeException("User with user name: "+userName+" not found");
+
         }
 
 
@@ -202,7 +237,14 @@ public class UserServiceImpl implements UserService {
         userDb.setUserName(user.getUserName());
         User updatedUser = userRepo.save(userDb);
         if(updatedUser==null){
-            throw new RuntimeException("User: " + user.getUserName()+" did not updated");
+            //throw new RuntimeException("User: " + user.getUserName()+" did not update");
+
+            String[] params=new String[]{user.getUserName()};
+            String message = messageSource.getMessage("user.usernotupdate"
+                    ,params,LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
+
+
         }
         UserDto returnUserDto=new UserDto();
         BeanUtils.copyProperties(updatedUser,returnUserDto);
@@ -242,14 +284,25 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserByCodeActivate(String code) {
         User byActivateCode = userRepo.findByActivateCode(code);
         if(byActivateCode==null){
-            throw new RuntimeException("Activation code is wrong");
+            //throw new RuntimeException("Activation code is wrong");
+
+            String message = messageSource.getMessage(
+                    "registration.user.activationcodewrong"
+                    ,null,LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
+
         }
 
         byActivateCode.setActivateCode("");
         byActivateCode.setActive(true);
         User userActivated=userRepo.save(byActivateCode);
         if(userActivated==null){
-            throw new RuntimeException("Error during activating");
+            //throw new RuntimeException("Error during activatiion");
+
+            String message = messageSource.getMessage(
+                    "registration.user.activationerror"
+                    ,null,LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
         }
 
 
@@ -271,7 +324,12 @@ public class UserServiceImpl implements UserService {
 
         User userByUserName = userRepo.findUserByUserName(userName);
         if(userByUserName==null){
-            throw new UsernameNotFoundException("User with user name: "+userName+" not found");
+            //throw new UsernameNotFoundException("User with user name: "+userName+" not found");
+
+            String[] params=new String[]{userName};
+            String message = messageSource.getMessage("user.usernamenotfound"
+                    ,params,LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
         }
 
         return new org.springframework.security.core.userdetails.User(

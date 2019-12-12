@@ -15,6 +15,8 @@ import com.salon.ui.model.response.UserResponse;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +33,8 @@ public class UserController {
     //@Autowired
     private UserService userService;
 
-
+    @Autowired
+    private MessageSource messageSource;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -43,7 +46,11 @@ public class UserController {
         List<UserResponse>userResponseList=new ArrayList<>();
         List<UserDto> listUsers = userService.getListUsers();
         if(listUsers.isEmpty() || listUsers==null){
-            throw new RuntimeException("List of users is empty");
+            //throw new RuntimeException("List of users is empty");
+
+            String  message=messageSource.getMessage("user.userlistempty"
+                    ,null, LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
         }
         for (UserDto userDto:listUsers){
             UserResponse userResponse=new UserResponse();
@@ -72,7 +79,7 @@ public class UserController {
         UserResponse userResponse=new UserResponse();
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userRequest,userDto);
-        System.out.println("-------------------------------");
+        //System.out.println("-------------------------------");
 //        Client client=null;
 //
 //        if(userRequest.isClient()){
@@ -100,13 +107,19 @@ public class UserController {
             @RequestBody UserRequest userRequest){
 
         if(userRequest==null){
-            throw new RuntimeException("User for update is wronge");
+            //throw new RuntimeException("User for update is wrong");
+            String message=messageSource.getMessage("user.usernotset"
+                    ,null,LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
         }
         UserDto userDto=new UserDto();
         BeanUtils.copyProperties(userRequest,userDto);
         UserDto userUpdated= userService.updateUser(userDto);
         if(userUpdated==null){
-            throw new RuntimeException("Error during updating");
+            //throw new RuntimeException("Error during updating");
+            String[] params=new String[]{userRequest.getUserName()};
+            String message=messageSource.getMessage("user.usernotupdate"
+                    ,params,LocaleContextHolder.getLocale());
         }
         UserResponse userReturn=new UserResponse();
         BeanUtils.copyProperties(userUpdated,userReturn);
@@ -130,7 +143,11 @@ public class UserController {
     public UserResponse activate(@PathVariable("code")String code){
         UserResponse userResponse=new UserResponse();
         if(code==null){
-            throw new RuntimeException("code activation is wronge");
+            //throw new RuntimeException("code activation is wrong");
+            String message=messageSource.getMessage(
+                    "registration.user.activationcodewrong"
+                    ,null,LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
         }
 
         UserDto userByCodeActivate = userService.getUserByCodeActivate(code);
