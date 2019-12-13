@@ -6,11 +6,12 @@ package com.salon.controllers;
 //import com.salon.ui.model.response.UserResponse;
 //import org.springframework.beans.BeanUtils;
 //import org.springframework.beans.factory.annotation.Autowired;
-import com.salon.domain.Client;
-import com.salon.domain.Person;
 import com.salon.dto.UserDto;
+import com.salon.exceptions.OperationStatusModel;
+import com.salon.ui.model.request.RequestOperationName;
 import com.salon.exceptions.UserServiceException;
 import com.salon.services.UserService;
+import com.salon.ui.model.request.RequestOperationStatus;
 import com.salon.ui.model.request.UserRequest;
 import com.salon.ui.model.response.UserResponse;
 
@@ -19,13 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("api/users")
@@ -66,6 +65,11 @@ public class UserController {
             ,produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public UserResponse getUserByUserId(@PathVariable("userId")String userId){
         UserDto userDb=userService.getUserByUserId(userId);
+        if(userDb==null){
+            String message=messageSource.getMessage(
+                    "user.usernotfound",null,LocaleContextHolder.getLocale());
+            throw new UsernameNotFoundException(message);
+        }
         UserResponse userResponse=new UserResponse();
         BeanUtils.copyProperties(userDb,userResponse);
         return userResponse;
@@ -130,9 +134,15 @@ public class UserController {
         //return "post some user !!!...";
     }
 
-    @PutMapping(produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+    @PutMapping(
+            /*path = "/{id}",*/
+            consumes = {MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE})
     public UserResponse  updateUser(
-            @RequestBody UserRequest userRequest){
+            @RequestBody UserRequest userRequest
+            /*,@PathVariable("id")String id*/){
 
         if(userRequest==null){
             //throw new RuntimeException("User for update is wrong");
@@ -156,15 +166,35 @@ public class UserController {
         //return "put update some user ...";
     }
 
-    @DeleteMapping(produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public /*void*/String deleteUser(/*@RequestBody UserRequest user*/){
-//        if(user==null){
-//            throw new RuntimeException("user is wronge");
-//        }
-//        UserDto userDto=new UserDto();
-//        BeanUtils.copyProperties(user,userDto);
-//        userService.deleteUser(userDto);
-        return "delete delete some user ...";
+    @DeleteMapping(
+            path = "/{id}"
+            /*,consumes = {MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE}*/
+            ,produces = {MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE})
+    public OperationStatusModel deleteUser(
+            @PathVariable("id")String id
+            ,@RequestBody UserRequest user){
+        if(user==null){
+            String message=messageSource.getMessage("usernotfound",null,
+                    LocaleContextHolder.getLocale()  );
+            throw new UsernameNotFoundException(message);
+        }
+
+
+        UserDto userDto=new UserDto();
+        BeanUtils.copyProperties(user,userDto);
+        userService.deleteUser(userDto);
+        //userService.getUserByUserId(id);
+
+        //userService.getUserByUserId(id);
+        OperationStatusModel operationStatusModel=new OperationStatusModel();
+        operationStatusModel.setOperationName(RequestOperationName.DELETE.name());
+        operationStatusModel.setOperationResult(RequestOperationStatus.SUCCES.name());
+
+        //return "delete delete some user ...";
+
+        return operationStatusModel;
     }
 
 

@@ -6,6 +6,7 @@ import com.salon.common.Utils;
 import com.salon.domain.Authority;
 import com.salon.domain.Client;
 import com.salon.domain.User;
+import com.salon.exceptions.UserServiceException;
 import com.salon.repository.UserRepo;
 import com.salon.services.UserService;
 import com.salon.dto.UserDto;
@@ -195,7 +196,7 @@ public class UserServiceImpl implements UserService {
                     ,null,LocaleContextHolder.getLocale());
             //throw new UsernameNotFoundException("User with email: "+userName+" not found");
             //throw new RuntimeException("User with user name: "+userName+" not found");
-            throw new RuntimeException(message);
+            throw new UserServiceException(message);
         }
 
 
@@ -206,7 +207,7 @@ public class UserServiceImpl implements UserService {
             String[] params=new String[]{user.getUserName()};
             String message = messageSource.getMessage("user.usernamenotfound"
                     ,params,LocaleContextHolder.getLocale());
-            throw new RuntimeException(message);
+            throw new UsernameNotFoundException(message);
             //throw new UsernameNotFoundException("User with email: "+userName+" not found");
             //throw new RuntimeException("User with user name: "+userName+" not found");
 
@@ -242,7 +243,7 @@ public class UserServiceImpl implements UserService {
             String[] params=new String[]{user.getUserName()};
             String message = messageSource.getMessage("user.usernotupdate"
                     ,params,LocaleContextHolder.getLocale());
-            throw new RuntimeException(message);
+            throw new UsernameNotFoundException(message);
 
 
         }
@@ -259,25 +260,44 @@ public class UserServiceImpl implements UserService {
 
         //return null;
     }
-//
-//    @Override
-//    public void deleteUser( UserDto user) {
-//        if(user==null){
-//            throw new RuntimeException("user is empty");
-//        }
-//        User userDb=userRepo.findUserByUserId(user.getUserId());
-//        if(userDb==null){
-//            throw new RuntimeException("User: " + user.getUserName()+"is not exists");
-//        }
-//
-//        //User userDb=new User();
-//        //BeanUtils.copyProperties(user,userDb);
-//
-//        userRepo.delete(userDb);
-//
-//        //return null;
-//    }
-//
+
+    @Override
+    public void deleteUser( UserDto user) {
+        if(user==null){
+            throw new RuntimeException("user is empty");
+        }
+        User userDb=userRepo.findUserByUserId(user.getUserId());
+        if(userDb==null){
+            String message=messageSource.getMessage("user.usernotfound",null,
+                    LocaleContextHolder.getLocale());
+            throw new UsernameNotFoundException(message);
+        }
+
+
+        userDb.setActive(false);
+        User deleteUser = userRepo.save(userDb);
+        if(deleteUser.isActive()){
+            String message=messageSource.getMessage("user.usernotdelete",null
+                    ,LocaleContextHolder.getLocale());
+            throw new UserServiceException(message);
+        }
+
+
+        //User userDb=new User();
+        //BeanUtils.copyProperties(user,userDb);
+
+        //userRepo.delete(userDb);
+
+        //return null;
+    }
+
+    @Override
+    public void deleteUserByUserId(String userId) {
+        UserDto userByUserId = getUserByUserId(userId);
+        deleteUser(userByUserId);
+    }
+
+    //
 
 
     @Override
@@ -329,7 +349,7 @@ public class UserServiceImpl implements UserService {
             String[] params=new String[]{userName};
             String message = messageSource.getMessage("user.usernamenotfound"
                     ,params,LocaleContextHolder.getLocale());
-            throw new RuntimeException(message);
+            throw new UsernameNotFoundException(message);
         }
 
         return new org.springframework.security.core.userdetails.User(
