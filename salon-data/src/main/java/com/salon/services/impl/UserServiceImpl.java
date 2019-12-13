@@ -14,11 +14,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.stereotype.Service;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -208,6 +212,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDto> getUsers(Integer page, Integer limit) {
+        List<UserDto>returnListUsers=new ArrayList<>();
+        Pageable pageableRequest= PageRequest.of(page,limit);
+
+        Page<User>usersPage = userRepo.findByActive(true, pageableRequest);
+        List<User> users = usersPage.getContent() ;
+
+        for (User user:users  ) {
+
+            UserDto userDto=new UserDto();
+            if(user.getClient()!=null){
+                BeanUtils.copyProperties(user.getClient(),userDto);
+            }else {
+                BeanUtils.copyProperties(user.getMaster(),userDto);
+            }
+            BeanUtils.copyProperties(user,userDto);
+            returnListUsers.add(userDto);
+
+        }
+        return returnListUsers;
+    }
+
+
+    @Override
     public UserDto updateUser(UserDto user) {
         if(user == null){
             //throw new RuntimeException("user is null");
@@ -391,4 +419,6 @@ public class UserServiceImpl implements UserService {
          userByUserName.getUserName(),userByUserName.getPassword(),new ArrayList<>());
         //return userByEmail;
     }
+
+
 }

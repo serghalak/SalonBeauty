@@ -21,4 +21,6 @@ public interface UserService extends UserDetailsService {
 
     void deleteUser(UserDto user);
     void deleteUserByUserId(String userId);
+
+    List<UserDto> getUsers(Integer page, Integer limit);
 }

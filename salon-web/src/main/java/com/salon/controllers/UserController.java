@@ -40,26 +40,58 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public List<UserResponse> getAllListUsers(){
+//    @GetMapping(
+//            produces = {MediaType.APPLICATION_JSON_VALUE
+//                    ,MediaType.APPLICATION_XML_VALUE})
+//    public List<UserResponse> getAllListUsers(){
+//
+//        List<UserResponse>userResponseList=new ArrayList<>();
+//        List<UserDto> listUsers = userService.getListUsers();
+//        if(listUsers.isEmpty() || listUsers==null){
+//            //throw new RuntimeException("List of users is empty");
+//
+//            String  message=messageSource.getMessage("user.userlistempty"
+//                    ,null, LocaleContextHolder.getLocale());
+//            throw new UserServiceException(message);
+//        }
+//        for (UserDto userDto:listUsers){
+//            UserResponse userResponse=new UserResponse();
+//            BeanUtils.copyProperties(userDto,userResponse);
+//            userResponseList.add(userResponse);
+//        }
+//        return userResponseList;
+//        //return "get some user !!!...";
+//    }
 
-        List<UserResponse>userResponseList=new ArrayList<>();
-        List<UserDto> listUsers = userService.getListUsers();
-        if(listUsers.isEmpty() || listUsers==null){
-            //throw new RuntimeException("List of users is empty");
+    //get users with query string /users?page=1&limit=10
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE
+            ,MediaType.APPLICATION_XML_VALUE})
+    public List<UserResponse>getUsers(
+            @RequestParam(value = "page",defaultValue = "0")Integer page
+            ,@RequestParam(value = "limit" , defaultValue = "10")Integer limit){
+        List<UserResponse>returnValue=new ArrayList<>();
 
+        List<UserDto>userResponses=userService.getUsers(page,limit);
+
+        if(userResponses.isEmpty() || userResponses==null){
             String  message=messageSource.getMessage("user.userlistempty"
                     ,null, LocaleContextHolder.getLocale());
             throw new UserServiceException(message);
         }
-        for (UserDto userDto:listUsers){
+
+        for (UserDto userDto : userResponses){
+
             UserResponse userResponse=new UserResponse();
             BeanUtils.copyProperties(userDto,userResponse);
-            userResponseList.add(userResponse);
+            returnValue.add(userResponse);
         }
-        return userResponseList;
-        //return "get some user !!!...";
+
+        return returnValue;
     }
+
+
+
+
 
     @GetMapping(value = "/{userId}"
             ,produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
@@ -214,6 +246,7 @@ public class UserController {
 
         return userResponse;
     }
+
 
 
 
