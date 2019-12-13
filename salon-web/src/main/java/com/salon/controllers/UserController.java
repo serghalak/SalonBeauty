@@ -9,6 +9,7 @@ package com.salon.controllers;
 import com.salon.domain.Client;
 import com.salon.domain.Person;
 import com.salon.dto.UserDto;
+import com.salon.exceptions.UserServiceException;
 import com.salon.services.UserService;
 import com.salon.ui.model.request.UserRequest;
 import com.salon.ui.model.response.UserResponse;
@@ -50,7 +51,7 @@ public class UserController {
 
             String  message=messageSource.getMessage("user.userlistempty"
                     ,null, LocaleContextHolder.getLocale());
-            throw new RuntimeException(message);
+            throw new UserServiceException(message);
         }
         for (UserDto userDto:listUsers){
             UserResponse userResponse=new UserResponse();
@@ -75,6 +76,33 @@ public class UserController {
             , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public UserResponse createUser(
             @RequestBody UserRequest userRequest){
+
+        if(userRequest==null){
+            String message=messageSource.getMessage(
+                    "user.usernotset",null
+                    ,LocaleContextHolder.getLocale());
+            throw new UserServiceException(message);
+        }
+        if(userRequest.getLastName()==null
+                || userRequest.getLastName().equals("")){
+            String message=messageSource.getMessage(
+                    "registration.user.lastnameisempty",null
+                    ,LocaleContextHolder.getLocale());
+            throw new UserServiceException(message);
+        }
+
+        if(userRequest.getUserName().equals("")
+                || userRequest.getFirstName().equals("")
+                || userRequest.getEmail().equals("")
+                || userRequest.getPhoneNumber().equals("")
+                || userRequest.getPassword().equals("")
+                || userRequest.getLastName().equals("")){
+            String message=messageSource.getMessage(
+                    "registration.user.requiredfields",null
+                    ,LocaleContextHolder.getLocale());
+            throw new UserServiceException(message);
+        }
+
 
         UserResponse userResponse=new UserResponse();
         UserDto userDto = new UserDto();
@@ -110,7 +138,7 @@ public class UserController {
             //throw new RuntimeException("User for update is wrong");
             String message=messageSource.getMessage("user.usernotset"
                     ,null,LocaleContextHolder.getLocale());
-            throw new RuntimeException(message);
+            throw new UserServiceException(message);
         }
         UserDto userDto=new UserDto();
         BeanUtils.copyProperties(userRequest,userDto);
@@ -120,6 +148,7 @@ public class UserController {
             String[] params=new String[]{userRequest.getUserName()};
             String message=messageSource.getMessage("user.usernotupdate"
                     ,params,LocaleContextHolder.getLocale());
+            throw new UserServiceException(message);
         }
         UserResponse userReturn=new UserResponse();
         BeanUtils.copyProperties(userUpdated,userReturn);
@@ -147,7 +176,7 @@ public class UserController {
             String message=messageSource.getMessage(
                     "registration.user.activationcodewrong"
                     ,null,LocaleContextHolder.getLocale());
-            throw new RuntimeException(message);
+            throw new UserServiceException(message);
         }
 
         UserDto userByCodeActivate = userService.getUserByCodeActivate(code);
