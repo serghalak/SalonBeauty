@@ -53,7 +53,9 @@ public class UserServiceImpl implements UserService {
 //            throw new RuntimeException("user with email: " + user.getEmail()
 //                    +" is already exists. Change your email address");
 //        }
-        if(userRepo.findUserByUserName(user.getUserName())!= null){
+
+        User userByUserName = userRepo.findUserByUserName(user.getUserName());
+        if(userByUserName!= null ){
 //            throw new RuntimeException("user with nick: " + user.getUserName()
 //                    +" is already exists. Change your nickname!!!");
             String[] params=new String[]{user.getUserName()};
@@ -63,6 +65,8 @@ public class UserServiceImpl implements UserService {
                             ,params
                             , LocaleContextHolder.getLocale()));
         }
+
+
 //        if(user.getPhoneNumber() != null && userRepo.findUserByPhoneNumber(user.getPhoneNumber())!=null ){
 //            throw new RuntimeException("user with phone number: " + user.getPhoneNumber()
 //                    +" is already exists. Change your phone number");
@@ -131,12 +135,18 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserByUserId(String userId) {
 
         User byUserId = userRepo.findByUserId(userId);
-        if(byUserId==null){
+        if(byUserId==null ){
 
             String message=messageSource.getMessage("user.usernotfound"
                     ,null,LocaleContextHolder.getLocale());
-            throw new RuntimeException(message);
+            throw new UserServiceException(message);
         }
+        if(!byUserId.isActive()){
+            String message=messageSource.getMessage("user.usernotfound"
+                    ,null,LocaleContextHolder.getLocale());
+            throw new UserServiceException(message);
+        }
+
         UserDto userDto=new UserDto();
         BeanUtils.copyProperties(byUserId,userDto);
         if(byUserId.getClient()!=null){
@@ -161,6 +171,14 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException(message);
         }
 
+        if(!userByUserName.isActive()){
+            String[] params=new String[]{userName};
+            String message = messageSource.getMessage("user.usernamenotfound"
+                    ,params,LocaleContextHolder.getLocale());
+            //throw new UsernameNotFoundException("User with email: "+userName+" not found");
+            //throw new RuntimeException("User with user name: "+userName+" not found");
+            throw new RuntimeException(message);
+        }
         //UserDetails userDetails = loadUserByUsername(email);
         UserDto userDto=new UserDto();
         BeanUtils.copyProperties(userByUserName,userDto);
@@ -174,18 +192,19 @@ public class UserServiceImpl implements UserService {
         List<UserDto>returnListUsers=new ArrayList<>();
 //
         for (User user:users){
-            UserDto userDto=new UserDto();
-            //System.out.println(user);
-            if(user.getClient()!=null){
-                BeanUtils.copyProperties(user.getClient(),userDto);
-            }else {
-                BeanUtils.copyProperties(user.getMaster(),userDto);
+            if(user.isActive()){
+                UserDto userDto=new UserDto();
+                if(user.getClient()!=null){
+                    BeanUtils.copyProperties(user.getClient(),userDto);
+                }else {
+                    BeanUtils.copyProperties(user.getMaster(),userDto);
+                }
+                BeanUtils.copyProperties(user,userDto);
+                returnListUsers.add(userDto);
             }
-            BeanUtils.copyProperties(user,userDto);
-            returnListUsers.add(userDto);
+
         }
         return returnListUsers;
-  //      return null;
     }
 
     @Override
@@ -208,9 +227,12 @@ public class UserServiceImpl implements UserService {
             String message = messageSource.getMessage("user.usernamenotfound"
                     ,params,LocaleContextHolder.getLocale());
             throw new UsernameNotFoundException(message);
-            //throw new UsernameNotFoundException("User with email: "+userName+" not found");
-            //throw new RuntimeException("User with user name: "+userName+" not found");
-
+        }
+        if(!userDb.isActive()){
+            String[] params=new String[]{user.getUserName()};
+            String message = messageSource.getMessage("user.usernamenotfound"
+                    ,params,LocaleContextHolder.getLocale());
+            throw new UsernameNotFoundException(message);
         }
 
 
@@ -268,11 +290,18 @@ public class UserServiceImpl implements UserService {
         }
         User userDb=userRepo.findUserByUserId(user.getUserId());
         if(userDb==null){
-            String message=messageSource.getMessage("user.usernotfound",null,
+            String[] params=new String[]{user.getUserName()};
+            String message=messageSource.getMessage("user.usernotfound",params,
                     LocaleContextHolder.getLocale());
             throw new UsernameNotFoundException(message);
         }
 
+        if(!userDb.isActive()){
+            String[] params=new String[]{user.getUserName()};
+            String message=messageSource.getMessage("user.usernotfound",params,
+                    LocaleContextHolder.getLocale());
+            throw new UsernameNotFoundException(message);
+        }
 
         userDb.setActive(false);
         User deleteUser = userRepo.save(userDb);
@@ -346,6 +375,12 @@ public class UserServiceImpl implements UserService {
         if(userByUserName==null){
             //throw new UsernameNotFoundException("User with user name: "+userName+" not found");
 
+            String[] params=new String[]{userName};
+            String message = messageSource.getMessage("user.usernamenotfound"
+                    ,params,LocaleContextHolder.getLocale());
+            throw new UsernameNotFoundException(message);
+        }
+        if(!userByUserName.isActive()){
             String[] params=new String[]{userName};
             String message = messageSource.getMessage("user.usernamenotfound"
                     ,params,LocaleContextHolder.getLocale());
