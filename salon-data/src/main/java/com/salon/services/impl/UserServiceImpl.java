@@ -2,6 +2,7 @@ package com.salon.services.impl;
 
 
 import com.salon.common.MailSender;
+import com.salon.common.RegistrationLink;
 import com.salon.common.Utils;
 import com.salon.domain.Authority;
 import com.salon.domain.Client;
@@ -12,6 +13,7 @@ import com.salon.services.UserService;
 import com.salon.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,11 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private RegistrationLink registrationLink;
+
+
     //@Autowired
     private UserRepo userRepo;
     //@Autowired
@@ -104,8 +111,12 @@ public class UserServiceImpl implements UserService {
         //if email is exist
         if(user.isClient()){
             if (userCreate.getClient().getEmail() !=null){
-                String[] params=new String[]{userDb.getClient().getFirstName()
-                        ,userDb.getActivateCode()};
+                String link= registrationLink.getAppHost()
+                        +registrationLink.getAppName()
+                        +registrationLink.getAppActivatePath()+userDb.getActivateCode();
+
+
+                String[] params=new String[]{userDb.getClient().getFirstName() ,link};
                 String messageLink=messageSource.getMessage("registration.user.emaillink"
                         ,params,LocaleContextHolder.getLocale());
 //                String message=String.format("Hello, %s! \n"+

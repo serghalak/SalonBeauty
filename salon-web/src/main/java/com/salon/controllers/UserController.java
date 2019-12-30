@@ -15,16 +15,25 @@ import com.salon.ui.model.request.RequestOperationStatus;
 import com.salon.ui.model.request.UserRequest;
 import com.salon.ui.model.response.UserResponse;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Destination;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.hateoas.CollectionModel;
 
 @RestController
 @RequestMapping("api/users")
@@ -65,10 +74,12 @@ public class UserController {
 
     //get users with query string /users?page=1&limit=10
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE
-            ,MediaType.APPLICATION_XML_VALUE})
-    public List<UserResponse>getUsers(
+            ,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
+    public /*List<UserResponse>*/CollectionModel<UserResponse>getUsers(
             @RequestParam(value = "page",defaultValue = "0")Integer page
             ,@RequestParam(value = "limit" , defaultValue = "10")Integer limit){
+
+
         List<UserResponse>returnValue=new ArrayList<>();
 
         List<UserDto>userResponses=userService.getUsers(page,limit);
@@ -79,14 +90,33 @@ public class UserController {
             throw new UserServiceException(message);
         }
 
-        for (UserDto userDto : userResponses){
+        Link userLink=null;
 
+        for (UserDto userDto : userResponses){
             UserResponse userResponse=new UserResponse();
             BeanUtils.copyProperties(userDto,userResponse);
+
+            //for link uses hateoas
+            userLink=linkTo(UserController.class).slash(userResponse.getUserId()).withSelfRel();
+            //userLink=linkTo(methodOn(UserController.class).getUsersAuthentication()).slash(userResponse.getUserId()).withSelfRel();
+            userResponse.add(userLink);
+
             returnValue.add(userResponse);
         }
 
-        return returnValue;
+        //it's the same that previous loop but using ModelMapper library
+//        java.lang.reflect.Type listType=new TypeToken<List<UserResponse>>() {}.getType();
+//        ModelMapper modelMapper=new ModelMapper();
+//        returnValue=modelMapper.map(userResponses,listType);
+
+        //return returnValue;
+
+                    //for ne hateoas
+        //ResourceSupport is now RepresentationModel
+        //Resource<T> is now EntityModel<T>
+        //Resources<T> is now CollectionModel<T>
+        //PagedResources<T> is now PagedModel<T>
+        return new CollectionModel<>(returnValue);
     }
 
 
@@ -141,8 +171,31 @@ public class UserController {
 
 
         UserResponse userResponse=new UserResponse();
+
+        //replace these two lines on the ModelMapper
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userRequest,userDto);
+
+
+
+//        ModelMapper modelMapper=new ModelMapper();
+//        PropertyMap<UserRequest,UserDto>userMap=new PropertyMap<UserRequest, UserDto>() {
+//            @Override
+//            protected void configure() {
+//                map().setUserId(source.getUserId());
+//                map().setPassword(source.getPassword());
+//                map().setUserName(source.getUserName());
+//                map().setClient(source.isClient());
+//                map().setFirstName(source.getClientRequest().getFirstName());
+//                map().setLastName(source.getClientRequest().getLastName());
+//                map().setEmail(source.getClientRequest().getEmail());
+//                map().setPhoneNumber(source.getClientRequest().getPhoneNumber());
+//            }
+//        };
+//
+//        UserDto userDto=modelMapper.map(userRequest,UserDto.class);
+
+
         //System.out.println("-------------------------------");
 //        Client client=null;
 //

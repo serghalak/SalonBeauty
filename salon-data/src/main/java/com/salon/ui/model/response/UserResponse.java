@@ -1,10 +1,11 @@
 package com.salon.ui.model.response;
 
+import org.springframework.hateoas.RepresentationModel;
 
-import com.salon.domain.Person;
-import com.salon.domain.PersonExt;
+//import com.salon.domain.Person;
+//import com.salon.domain.PersonExt;
 
-public class UserResponse /*extends Person*/ /*PersonExt*/{
+public class UserResponse extends RepresentationModel  /*extends Person*/ /*PersonExt*/{
 
     private String userId;
     private String userName;

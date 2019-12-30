@@ -1,19 +1,41 @@
 package com.salon.ui.model.request;
 
+import com.salon.domain.Client;
 import com.salon.domain.Person;
 import com.salon.domain.PersonExt;
 
 public class UserRequest /*extends Person *//*PersonExt*/ {
 
     private String userId;
+    private String password;
     private String userName;
+
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
-    private String password;
 
     private boolean isClient=true;
+
+    //private ClientRequest clientRequest;
+
+
+    // get and set--------------------------------------------------
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public boolean isClient() {
         return isClient;
@@ -21,14 +43,6 @@ public class UserRequest /*extends Person *//*PersonExt*/ {
 
     public void setClient(boolean client) {
         isClient = client;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getUserName() {
@@ -71,11 +85,12 @@ public class UserRequest /*extends Person *//*PersonExt*/ {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+//    public ClientRequest getClientRequest() {
+//        return clientRequest;
+//    }
+//
+//    public void setClientRequest(ClientRequest clientRequest) {
+//        this.clientRequest = clientRequest;
+//    }
 }
