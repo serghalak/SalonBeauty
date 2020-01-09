@@ -3,16 +3,19 @@ package com.salon.domain;
 
 //import org.springframework.data.annotation.Id;
 
-//import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
+
+
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-//@Entity
+@Entity
 //@Table
-public class Authority  extends IdEntity/*implements GrantedAuthority,Serializable*/ {
+public class Authority  extends IdEntity
+        implements GrantedAuthority {
 
 //    @Id
 //    @GeneratedValue(strategy= GenerationType.AUTO)

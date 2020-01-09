@@ -32,6 +32,15 @@
 		<java.version>1.8</java.version>
 	</properties>
 
+	<!--for war -->
+	<!--<dependencies>-->
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+			<!--<scope>provided</scope>-->
+		<!--</dependency>-->
+	<!--</dependencies>-->
+
 
 	<build>
 		<plugins>

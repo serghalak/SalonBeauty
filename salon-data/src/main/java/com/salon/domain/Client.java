@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 //@Table
-public class Client extends Person {
+public class Client extends Person /*PersonExtId*/ {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,6 +18,11 @@ public class Client extends Person {
 
     @OneToMany(mappedBy = "client")
     private List<Appointment> appointments=new ArrayList<>();
+
+    @OneToOne(mappedBy = "client")
+    private User user;
+
+
 
 //    public Long getId() {
 //        return id;
@@ -33,5 +38,13 @@ public class Client extends Person {
 
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
