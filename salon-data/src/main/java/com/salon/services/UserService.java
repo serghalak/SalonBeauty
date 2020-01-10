@@ -1,6 +1,7 @@
 package com.salon.services;
 
 import com.salon.dto.UserDto;
+import com.salon.dto.UserMasterDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -23,4 +24,7 @@ public interface UserService extends UserDetailsService {
     void deleteUserByUserId(String userId);
 
     List<UserDto> getUsers(Integer page, Integer limit);
+
+
+    UserMasterDto createUserMaster(UserMasterDto userMasterDto);
 }

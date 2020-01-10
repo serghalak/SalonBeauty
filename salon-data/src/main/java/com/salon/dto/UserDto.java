@@ -6,7 +6,7 @@ import java.io.Serializable;
 public class UserDto implements Serializable {
 
     private Long id;
-    private  String userId;
+    private String userId;
     private String userName;
     private String firstName;
     private String lastName;

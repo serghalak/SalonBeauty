@@ -7,6 +7,7 @@ import com.salon.common.Utils;
 import com.salon.domain.Authority;
 import com.salon.domain.Client;
 import com.salon.domain.User;
+import com.salon.dto.UserMasterDto;
 import com.salon.exceptions.UserServiceException;
 import com.salon.repository.UserRepo;
 import com.salon.services.UserService;
@@ -243,6 +244,11 @@ public class UserServiceImpl implements UserService {
 
         }
         return returnListUsers;
+    }
+
+    @Override
+    public UserMasterDto createUserMaster(UserMasterDto userMasterDto) {
+        return null;
     }
 
 
