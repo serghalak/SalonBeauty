@@ -77,7 +77,27 @@ public class SpecializationServiceImpl implements SpecializationService {
 
     @Override
     public Set<SpecializationDto> getSpecializationMasterByUserName(String userName) {
-        return null;
+        User userDb = userRepo.findUserByUserName(userName);
+        if(userDb==null || !userDb.isActive()){
+            throw new RuntimeException("user with userId not found");
+        }
+        if(userDb.getMaster()==null){
+            throw new RuntimeException("User is not master");
+
+        }
+        Set<Specialization> specializations = userDb.getMaster().getSpecializations();
+        if(specializations==null || specializations.isEmpty()){
+            throw new RuntimeException("This master does not have any specializations");
+        }
+
+        ModelMapper modelMapper=new ModelMapper();
+
+        Set<SpecializationDto>returnValue= new HashSet<>();
+
+        Type listType=new TypeToken<Set<SpecializationDto>>() {}.getType();
+        returnValue = modelMapper.map(specializations, listType);
+
+        return returnValue;
     }
 
 

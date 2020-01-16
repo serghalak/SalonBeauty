@@ -31,9 +31,9 @@ public class SpecializationController {
     }
 
     @GetMapping(
-            path="/{userId}"
+            path="/userid/{userId}"
             , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public Set<SpecializationResponse> createMaster(@PathVariable String userId){
+    public Set<SpecializationResponse> getSpecializationByUserId(@PathVariable String userId){
 
         if(userId.equals("") || userId.isEmpty() || userId==null){
             throw new RuntimeException("User id is wronge ");
@@ -43,6 +43,29 @@ public class SpecializationController {
 
         if(specializations==null || specializations.isEmpty()){
             throw new RuntimeException("Specializations is not found");
+        }
+
+
+        ModelMapper modelMapper=new ModelMapper();
+        Type listType=new TypeToken<Set<SpecializationResponse>>() {}.getType();
+        Set<SpecializationResponse>returnValue= modelMapper.map(specializations, listType);
+
+        return returnValue ;
+    }
+
+    @GetMapping(
+            path="/username/{userName}"
+            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+    public Set<SpecializationResponse> getSpecializationByUserName(@PathVariable String userName){
+
+        if(userName.equals("") || userName.isEmpty() || userName==null){
+            throw new RuntimeException("User name: " +userName +" is wronge ");
+        }
+
+        Set<SpecializationDto> specializations = specializationService.getSpecializationMasterByUserName(userName);
+
+        if(specializations==null || specializations.isEmpty()){
+            throw new RuntimeException("Specializations for user name: "+ userName+ " is not found");
         }
 
 
