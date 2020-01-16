@@ -1,10 +1,12 @@
 package com.salon.services;
 
+import com.salon.dto.SpecializationDto;
 import com.salon.dto.UserDto;
 import com.salon.dto.UserMasterDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.Set;
 
 
 import com.salon.dto.UserDto;
@@ -27,4 +29,5 @@ public interface UserService extends UserDetailsService {
 
 
     UserMasterDto createUserMaster(UserMasterDto userMasterDto);
+    Set<SpecializationDto> getSpecializations(String userName);
 }

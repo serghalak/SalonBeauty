@@ -4,14 +4,15 @@ package com.salon.services.impl;
 import com.salon.common.MailSender;
 import com.salon.common.RegistrationLink;
 import com.salon.common.Utils;
-import com.salon.domain.Authority;
-import com.salon.domain.Client;
-import com.salon.domain.User;
+import com.salon.domain.*;
+import com.salon.dto.SpecializationDto;
 import com.salon.dto.UserMasterDto;
 import com.salon.exceptions.UserServiceException;
 import com.salon.repository.UserRepo;
 import com.salon.services.UserService;
 import com.salon.dto.UserDto;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +28,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.lang.reflect.Type;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -248,7 +248,159 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserMasterDto createUserMaster(UserMasterDto userMasterDto) {
-        return null;
+
+
+////        if(userRepo.findUserByEmail(user.getEmail())!= null){
+////            throw new RuntimeException("user with email: " + user.getEmail()
+////                    +" is already exists. Change your email address");
+////        }
+//
+//        User userByUserName = userRepo.findUserByUserName(userMasterDto.getUserName());
+//        if(userByUserName!= null ){
+////            throw new RuntimeException("user with nick: " + user.getUserName()
+////                    +" is already exists. Change your nickname!!!");
+//            String[] params=new String[]{user.getUserName()};
+//
+//            throw new RuntimeException(
+//                    messageSource.getMessage("registration.user.exists"
+//                            ,params
+//                            , LocaleContextHolder.getLocale()));
+//        }
+//
+//
+////        if(user.getPhoneNumber() != null && userRepo.findUserByPhoneNumber(user.getPhoneNumber())!=null ){
+////            throw new RuntimeException("user with phone number: " + user.getPhoneNumber()
+////                    +" is already exists. Change your phone number");
+////        }
+
+
+        //User userCreate=new User();
+
+//        BeanUtils.copyProperties(user,userCreate);
+//        //userCreate.setPassword(user.getPassword());
+
+        ModelMapper modelMapper=new ModelMapper();
+        User user = modelMapper.map(userMasterDto, User.class);
+        user.setPassword(bCryptPasswordEncoder.encode(userMasterDto.getPassword()));
+//
+        user.setUserId(utils.generateUserId(30));
+        //user.setUserName(utils.getRandomUserName());
+        //user.setUserName(userMasterDto.getUserName());
+        //Client client=null;
+        //Master master=new MasterServiceImpl()
+        Authority authority=null;
+        if(!userMasterDto.isClient()){
+            //client=new Client();
+            user.setClient(null);
+            authority=new Authority();
+            authority.setId(2L);
+            authority.setRoleName("MASTER");
+            user.setAuthority(authority);
+
+            Master master=modelMapper.map(userMasterDto.getMaster(),Master.class);
+            user.setMaster(master);
+
+        }
+        User savedUser = userRepo.save(user);
+        UserMasterDto userMasterReturn = modelMapper.map(savedUser, UserMasterDto.class);
+        return userMasterReturn;
+
+
+//
+//
+//        userCreate.setActivateCode(UUID.randomUUID().toString());
+//
+//        BeanUtils.copyProperties(user,client);
+//        userCreate.setClient(client);
+//
+//        User userDb=userRepo.save(userCreate);
+//
+//        //if email is exist
+//        if(userMasterDto.isClient()){
+//            if (userCreate.getClient().getEmail() !=null){
+//                String link= registrationLink.getAppHost()
+//                        +registrationLink.getAppName()
+//                        +registrationLink.getAppActivatePath()+userDb.getActivateCode();
+//
+//
+//                String[] params=new String[]{userDb.getClient().getFirstName() ,link};
+//                String messageLink=messageSource.getMessage("registration.user.emaillink"
+//                        ,params,LocaleContextHolder.getLocale());
+////                String message=String.format("Hello, %s! \n"+
+////                    "Welcome to Salon Beauty. Please, visit next link: http://localhost:8080/api/users/activate/%s",
+////                        userDb.getClient().getFirstName(),
+////                        userDb.getActivateCode());
+//                String messageSubject=messageSource.getMessage("registration.user.activationcode"
+//                        ,null,LocaleContextHolder.getLocale());
+//                mailSender.send(userCreate.getClient().getEmail(),messageSubject,messageLink);
+//            }
+//        }
+//
+//
+//        UserDto userReturn=new UserDto();
+//
+////        if(userDb==null){
+////            throw new Exception("Cannot create user");
+////        }
+//
+//        BeanUtils.copyProperties(userDb,userReturn);
+//        if(userMasterDto.isClient()){
+//            BeanUtils.copyProperties(userDb.getClient(),userReturn);
+//
+//
+//        }
+
+       // return userReturn;
+
+      // return null;
+    }
+
+    @Override
+    public Set<SpecializationDto> getSpecializations(String userName) {
+
+
+        User userByUserName = userRepo.findUserByUserName(userName);
+        if(userByUserName==null){
+            String[] params=new String[]{userName};
+            String message = messageSource.getMessage("user.usernamenotfound"
+                    ,params,LocaleContextHolder.getLocale());
+            //throw new UsernameNotFoundException("User with email: "+userName+" not found");
+            //throw new RuntimeException("User with user name: "+userName+" not found");
+            throw new RuntimeException(message);
+        }
+
+        if(!userByUserName.isActive()){
+            String[] params=new String[]{userName};
+            String message = messageSource.getMessage("user.usernamenotfound"
+                    ,params,LocaleContextHolder.getLocale());
+            //throw new UsernameNotFoundException("User with email: "+userName+" not found");
+            //throw new RuntimeException("User with user name: "+userName+" not found");
+            throw new RuntimeException(message);
+        }
+
+
+
+        ModelMapper modelMapper=new ModelMapper();
+        Set<Specialization> specializations = userByUserName.getMaster().getSpecializations();
+        if(specializations == null || specializations.isEmpty()){
+            throw new RuntimeException("List of specializations for master: " + userName +" is empty");
+        }
+        Set<SpecializationDto>returnValue= new HashSet<>();
+
+        Type listType=new TypeToken<Set<SpecializationDto>>() {}.getType();
+        returnValue = modelMapper.map(specializations, listType);
+
+//
+
+//        for (Specialization specialization:specializations ) {
+//             specializationDtos.add( modelMapper.map(specialization, SpecializationDto.class));
+//        }
+//
+
+
+        return returnValue;
+
+
     }
 
 
@@ -436,6 +588,8 @@ public class UserServiceImpl implements UserService {
          userByUserName.getUserName(),userByUserName.getPassword(),new ArrayList<>());
         //return userByEmail;
     }
+
+
 
 
 }

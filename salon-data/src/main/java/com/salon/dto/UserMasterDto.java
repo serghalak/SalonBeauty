@@ -66,7 +66,7 @@ public class UserMasterDto implements Serializable {
         this.active = active;
     }
 
-    public Boolean getClient() {
+    public Boolean isClient() {
         return client;
     }
 

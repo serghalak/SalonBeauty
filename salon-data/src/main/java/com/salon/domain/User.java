@@ -60,7 +60,7 @@ public class User extends IdEntity implements UserDetails {
     private Client client;
 
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "master_id",referencedColumnName = "id")
     private Master master;
 

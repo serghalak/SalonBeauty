@@ -20,7 +20,7 @@ public class Specialization extends IdEntity  {
     private String specializationName;
 
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(name="master_specialization"
             ,joinColumns = @JoinColumn(name = "specialization_id",referencedColumnName = "id")
             ,inverseJoinColumns = @JoinColumn(name="master_id",referencedColumnName = "id"))

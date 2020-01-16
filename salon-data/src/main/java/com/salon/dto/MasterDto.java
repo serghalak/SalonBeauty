@@ -19,7 +19,7 @@ public class MasterDto implements Serializable{
     private Set<SpecializationDto> specializations
             =new HashSet<>();//specializationDtoList;
 
-    private UserDto user;//userDtoList;
+    //private UserDto user;//userDtoList;
 
 //    public List<UserDto> getUserDtoList() {
 //        return userDtoList;
@@ -78,11 +78,11 @@ public class MasterDto implements Serializable{
         this.specializations = specializations;
     }
 
-    public UserDto getUser() {
-        return user;
-    }
-
-    public void setUser(UserDto user) {
-        this.user = user;
-    }
+//    public UserDto getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(UserDto user) {
+//        this.user = user;
+//    }
 }
