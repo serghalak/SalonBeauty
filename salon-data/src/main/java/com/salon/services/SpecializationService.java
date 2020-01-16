@@ -12,5 +12,5 @@ public interface SpecializationService
     Set<SpecializationDto> getSpecializationMasterByUserId(String userId);
     Set<SpecializationDto> getSpecializationMasterByUserName(String userName);
 
-    Set<SpecializationDto>getAllSpecialization();
+
 }
