@@ -1,8 +1,11 @@
 package com.salon.services.impl;
 
+import com.salon.domain.Master;
 import com.salon.domain.Specialization;
 import com.salon.domain.User;
+import com.salon.dto.MasterDto;
 import com.salon.dto.SpecializationDto;
+import com.salon.dto.UserDto;
 import com.salon.repository.UserRepo;
 import com.salon.services.SpecializationService;
 import org.modelmapper.ModelMapper;
@@ -18,6 +21,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
 
     private UserRepo userRepo;
+
 
     public SpecializationServiceImpl(UserRepo userRepo) {
         this.userRepo = userRepo;
@@ -98,6 +102,16 @@ public class SpecializationServiceImpl implements SpecializationService {
         returnValue = modelMapper.map(specializations, listType);
 
         return returnValue;
+    }
+
+    @Override
+    public Set<SpecializationDto> getSpecializationByMaster(MasterDto master) {
+        return master.getSpecializations();
+    }
+
+    @Override
+    public Set<SpecializationDto> getSpecializationByUser(UserDto user) {
+        return getSpecializationMasterByUserName(user.getUserName());
     }
 
 
