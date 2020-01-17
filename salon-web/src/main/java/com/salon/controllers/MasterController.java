@@ -1,13 +1,16 @@
 package com.salon.controllers;
 
 import com.salon.domain.Specialization;
+import com.salon.dto.MasterDto;
 import com.salon.dto.SpecializationDto;
 import com.salon.dto.UserDto;
 import com.salon.dto.UserMasterDto;
+import com.salon.services.MasterService;
 import com.salon.services.UserService;
 import com.salon.ui.model.request.MasterRequest;
 import com.salon.ui.model.request.UserMasterRequest;
 import com.salon.ui.model.request.UserRequest;
+import com.salon.ui.model.response.MasterResponse;
 import com.salon.ui.model.response.SpecializationResponse;
 import com.salon.ui.model.response.UserMasterResponse;
 import com.salon.ui.model.response.UserResponse;
@@ -25,9 +28,11 @@ public class MasterController {
 
 
     private UserService userService;
+    private MasterService masterService;
 
-    public MasterController(UserService userService) {
+    public MasterController(UserService userService, MasterService masterService) {
         this.userService = userService;
+        this.masterService=masterService;
     }
 
     @GetMapping/*(name = "",consumes = {},produces = {})*/
@@ -77,32 +82,32 @@ public class MasterController {
     }
 
     @GetMapping(
-            path="/{userName}/specializations"
+            path="/{userName}"
             ,consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
             , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public Set<SpecializationResponse> createMaster(@PathVariable String userName){
+    public UserMasterResponse getMasterByUserName(@PathVariable String userName){
 
         if(userName.equals("") || userName.isEmpty() || userName==null){
-            throw new RuntimeException("User name is wronge ");
+            throw new RuntimeException("User name is wrong ");
         }
-        UserDto userDto = userService.getUser(userName);
-        if(userDto==null){
+        UserMasterDto userMasterDto = userService.getUserMasterDto(userName);
+
+        if(userMasterDto==null){
             throw new RuntimeException("User with user name: "+userName +" is not found");
         }
 
 
-        Set<SpecializationDto> specializations=userService.getSpecializations(userName);
+//        if(userDto.isClient()){
+//            throw new RuntimeException("The userName: " + userName + " is not master");
+//        }
+//        MasterDto masterDto=masterService.getMaster(userDto.getUserName());
+//        if(userMasterDto==null){
+//            throw new RuntimeException("The userName: "+userName+" is wrong");
+//        }
 
-        if(specializations.isEmpty()){
-            throw new RuntimeException("For master: " + userName+" specializations not founded");
-        }
-        Set<SpecializationResponse>returnValue=new HashSet<>();
         ModelMapper modelMapper=new ModelMapper();
-        for (SpecializationDto specializationDto:specializations ) {
-            SpecializationResponse specializationResponse =
-                    modelMapper.map(specializationDto, SpecializationResponse.class);
-            returnValue.add(specializationResponse);
-        }
+        UserMasterResponse  returnValue=  modelMapper.map(userMasterDto, UserMasterResponse.class);
+
 
         return returnValue ;
     }

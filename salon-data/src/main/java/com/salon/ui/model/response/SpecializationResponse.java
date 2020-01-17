@@ -1,7 +1,8 @@
 package com.salon.ui.model.response;
 
+import org.springframework.hateoas.RepresentationModel;
 
-public class SpecializationResponse {
+public class SpecializationResponse /*extends RepresentationModel*/ {
 
     private Long id;
     private String specializationName;

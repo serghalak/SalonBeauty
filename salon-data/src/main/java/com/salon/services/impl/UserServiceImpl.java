@@ -356,6 +356,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserMasterDto getUserMasterDto(String userName) {
+        User userDb = userRepo.findUserByUserName(userName);
+        if(userDb==null){
+            throw new RuntimeException("User by userName: " + userName + " not found");
+        }
+        Master master = userDb.getMaster();
+        if(master==null){
+            throw new RuntimeException("User is not master");
+        }
+//        Set<Specialization> specializations = master.getSpecializations();
+//        if(specializations==null || specializations.isEmpty() || specializations.size()==0){
+//            throw new RuntimeException("The master: "
+//                    + master.getFirstName()+" "
+//                    + master.getLastName()+" does not have any specialization");
+//        }
+        ModelMapper modelMapper=new ModelMapper();
+        UserMasterDto returnValue = modelMapper.map(userDb, UserMasterDto.class);
+
+        return returnValue;
+    }
+
+    @Override
     public Set<SpecializationDto> getSpecializations(String userName) {
 
 

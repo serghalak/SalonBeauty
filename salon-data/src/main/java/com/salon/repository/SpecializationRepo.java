@@ -10,6 +10,6 @@ import java.util.Set;
 
 @Repository
 public interface SpecializationRepo extends CrudRepository<Specialization,Long> {
-    Set<Specialization>findAllByMaster(Master master);
-    Set<Specialization>findAllByUser(User user);
+//    Set<Specialization>findAllByMaster(Master master);
+//    Set<Specialization>findAllByUser(User user);
 }
