@@ -19,6 +19,8 @@ public interface SpecializationService
     Set<SpecializationDto>getSpecializationByMaster(MasterDto master);
     Set<SpecializationDto>getSpecializationByUser(UserDto user);
 
+    SpecializationDto getSpecializationById(long id);
+
 
 
 

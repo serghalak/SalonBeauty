@@ -2,14 +2,15 @@ package com.salon.ui.model.response;
 
 
 import com.salon.ui.model.request.MasterRequest;
+import org.springframework.hateoas.RepresentationModel;
 
-public class UserMasterResponse {
+public class UserMasterResponse extends RepresentationModel {
 
     private String userId;
     //private String password;
     private String userName;
 
-    private MasterRequest master;//Request;
+    private MasterResponse master;//Response;
 
     public String getUserId() {
         return userId;
@@ -35,11 +36,11 @@ public class UserMasterResponse {
         this.userName = userName;
     }
 
-    public MasterRequest getMaster() {
+    public MasterResponse getMaster() {
         return master;
     }
 
-    public void setMaster(MasterRequest master) {
+    public void setMaster(MasterResponse master) {
         this.master = master;
     }
 }

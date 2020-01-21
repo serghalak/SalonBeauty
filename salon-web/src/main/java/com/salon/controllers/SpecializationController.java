@@ -7,15 +7,21 @@ import com.salon.services.UserService;
 import com.salon.ui.model.response.SpecializationResponse;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sun.awt.image.ImageWatched;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping("api/specializations")
@@ -46,10 +52,26 @@ public class SpecializationController {
         }
 
 
-        ModelMapper modelMapper=new ModelMapper();
-        Type listType=new TypeToken<Set<SpecializationResponse>>() {}.getType();
-        Set<SpecializationResponse>returnValue= modelMapper.map(specializations, listType);
 
+        Set<SpecializationResponse>returnValue=new HashSet<>();
+        //List<SpecializationResponse>responses=new ArrayList<>();
+        ModelMapper modelMapper=new ModelMapper();
+//        Type listType=new TypeToken<Set<SpecializationResponse>>() {}.getType();
+
+//        Link specializationLink=linkTo(SpecializationController.class)
+//                .slash(specializationDto.getId()).withSelfRel();
+
+//        Set<SpecializationResponse> returnValue= modelMapper.map(specializations, listType);
+
+        for (SpecializationDto specializationDto:specializations   ) {
+            Link specializationLink=linkTo(SpecializationController.class)
+                    .slash(specializationDto.getId()).withSelfRel();
+            SpecializationResponse specializationResponse =
+                    modelMapper.map(specializationDto, SpecializationResponse.class);
+            specializationResponse.add(specializationLink);
+            returnValue.add(specializationResponse);
+            //responses.add(specializationResponse);
+        }
         return returnValue ;
     }
 
@@ -74,5 +96,14 @@ public class SpecializationController {
         Set<SpecializationResponse>returnValue= modelMapper.map(specializations, listType);
 
         return returnValue ;
+    }
+
+    @GetMapping(path = "/{specializationId}")
+    public SpecializationResponse getSpecialization(@PathVariable Long specializationId){
+        SpecializationDto specializationById = specializationService.getSpecializationById(specializationId);
+        ModelMapper modelMapper = new ModelMapper();
+        SpecializationResponse returnValue =
+                modelMapper.map(specializationById, SpecializationResponse.class);
+        return returnValue;
     }
 }

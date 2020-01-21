@@ -6,6 +6,7 @@ import com.salon.domain.User;
 import com.salon.dto.MasterDto;
 import com.salon.dto.SpecializationDto;
 import com.salon.dto.UserDto;
+import com.salon.repository.SpecializationRepo;
 import com.salon.repository.UserRepo;
 import com.salon.services.SpecializationService;
 import org.modelmapper.ModelMapper;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -21,10 +23,11 @@ public class SpecializationServiceImpl implements SpecializationService {
 
 
     private UserRepo userRepo;
+    private SpecializationRepo specializationRepo;
 
-
-    public SpecializationServiceImpl(UserRepo userRepo) {
+    public SpecializationServiceImpl(UserRepo userRepo,SpecializationRepo specializationRepo) {
         this.userRepo = userRepo;
+        this.specializationRepo=specializationRepo;
     }
 
     @Override
@@ -33,8 +36,9 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
-    public Specialization findById(Long aLong) {
-        return null;
+    public Specialization findById(Long id) {
+        Optional<Specialization> specialization = specializationRepo.findById(id);
+        return specialization.get();
     }
 
     @Override
@@ -112,6 +116,17 @@ public class SpecializationServiceImpl implements SpecializationService {
     @Override
     public Set<SpecializationDto> getSpecializationByUser(UserDto user) {
         return getSpecializationMasterByUserName(user.getUserName());
+    }
+
+    @Override
+    public SpecializationDto getSpecializationById(long id) {
+        Specialization specialization = findById(id);
+        if(specialization==null){
+            throw new RuntimeException("Thre is no specialization with id: " + id);
+        }
+        ModelMapper modelMapper=new ModelMapper();
+        SpecializationDto returnValue = modelMapper.map(specialization, SpecializationDto.class);
+        return returnValue;
     }
 
 

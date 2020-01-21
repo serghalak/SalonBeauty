@@ -356,7 +356,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserMasterDto getUserMasterDto(String userName) {
+    public UserMasterDto getUserMasterByUserName(String userName) {
         User userDb = userRepo.findUserByUserName(userName);
         if(userDb==null){
             throw new RuntimeException("User by userName: " + userName + " not found");
@@ -376,6 +376,17 @@ public class UserServiceImpl implements UserService {
 
         return returnValue;
     }
+
+
+    @Override
+    public UserMasterDto getUserMasterByUserId(String userId) {
+        User userDb = userRepo.findUserByUserId(userId);
+        if(userDb==null){
+            throw new RuntimeException("User by userId not found");
+        }
+        return getUserMasterByUserName(userDb.getUserName());
+    }
+
 
     @Override
     public Set<SpecializationDto> getSpecializations(String userName) {

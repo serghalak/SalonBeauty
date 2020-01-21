@@ -12,4 +12,6 @@ import java.util.Set;
 public interface SpecializationRepo extends CrudRepository<Specialization,Long> {
 //    Set<Specialization>findAllByMaster(Master master);
 //    Set<Specialization>findAllByUser(User user);
+
+    //Specialization findById(long id);
 }

@@ -1,19 +1,20 @@
 package com.salon.ui.model.response;
 
 import com.salon.ui.model.request.SpecializationRequest;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class MasterResponse {
+public class MasterResponse extends RepresentationModel {
 
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
 
-    private Set<SpecializationRequest> specializations=new HashSet<>();//specializationRequests;
+    private Set<SpecializationResponse> specializations=new HashSet<>();//specializationResponse;
 
     public String getFirstName() {
         return firstName;
@@ -45,5 +46,13 @@ public class MasterResponse {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Set<SpecializationResponse> getSpecializations() {
+        return specializations;
+    }
+
+    public void setSpecializations(Set<SpecializationResponse> specializations) {
+        this.specializations = specializations;
     }
 }

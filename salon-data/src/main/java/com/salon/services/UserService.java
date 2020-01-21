@@ -29,7 +29,8 @@ public interface UserService extends UserDetailsService {
 
 
     UserMasterDto createUserMaster(UserMasterDto userMasterDto);
-    UserMasterDto getUserMasterDto(String userName);
+    UserMasterDto getUserMasterByUserName(String userName);
+    UserMasterDto getUserMasterByUserId(String userId);
 
     Set<SpecializationDto> getSpecializations(String userName);
 }

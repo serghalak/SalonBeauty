@@ -15,12 +15,15 @@ import com.salon.ui.model.response.SpecializationResponse;
 import com.salon.ui.model.response.UserMasterResponse;
 import com.salon.ui.model.response.UserResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping("api/masters")
@@ -85,12 +88,12 @@ public class MasterController {
             path="/{userName}"
             ,consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
             , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public UserMasterResponse getMasterByUserName(@PathVariable String userName){
+    public UserMasterResponse getUserMasterByUserName(@PathVariable String userName){
 
         if(userName.equals("") || userName.isEmpty() || userName==null){
             throw new RuntimeException("User name is wrong ");
         }
-        UserMasterDto userMasterDto = userService.getUserMasterDto(userName);
+        UserMasterDto userMasterDto = userService.getUserMasterByUserName(userName);
 
         if(userMasterDto==null){
             throw new RuntimeException("User with user name: "+userName +" is not found");
@@ -110,5 +113,43 @@ public class MasterController {
 
 
         return returnValue ;
+    }
+
+    @GetMapping(
+            path="/user/{userId}"
+            ,consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
+            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+    public UserMasterResponse getUserMasterByUserId(@PathVariable String userId){
+        if(userId.equals("") || userId.isEmpty() || userId==null){
+            throw new RuntimeException("User id is wrong ");
+        }
+        UserMasterDto userMasterDto = userService.getUserMasterByUserId(userId);
+
+        if(userMasterDto==null){
+            throw new RuntimeException("User with user id: "+userId +" is not found");
+        }
+
+
+//        if(userDto.isClient()){
+//            throw new RuntimeException("The userName: " + userName + " is not master");
+//        }
+//        MasterDto masterDto=masterService.getMaster(userDto.getUserName());
+//        if(userMasterDto==null){
+//            throw new RuntimeException("The userName: "+userName+" is wrong");
+//        }
+
+        ModelMapper modelMapper=new ModelMapper();
+        UserMasterResponse  returnValue=  modelMapper.map(userMasterDto, UserMasterResponse.class);
+        Link masterLink=linkTo(MasterController.class)
+                .slash("user").slash(userId).withSelfRel();
+         returnValue.add(masterLink);
+        return returnValue ;
+    }
+
+    @GetMapping(path = "/{masterId}/master"
+            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+    public MasterResponse getMasterResponse(@PathVariable Long masterId){
+        //masterService.
+        return null;//returnValue;
     }
 }
