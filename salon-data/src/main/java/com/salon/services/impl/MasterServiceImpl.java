@@ -2,22 +2,38 @@ package com.salon.services.impl;
 
 import com.salon.domain.Master;
 import com.salon.dto.MasterDto;
+import com.salon.repository.MasterRepo;
 import com.salon.services.MasterService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class MasterServiceImpl implements MasterService {
+
+    MasterRepo masterRepo;
+
+    public MasterServiceImpl(MasterRepo masterRepo) {
+        this.masterRepo = masterRepo;
+    }
+
     @Override
     public Set<Master> findAll() {
         return null;
     }
 
     @Override
-    public Master findById(Long aLong) {
-        return null;
+    public Master findById(Long id) {
+        Optional<Master> masterDb = masterRepo.findById(id);
+        Master master=masterDb.get();
+        if(master==null){
+            throw new RuntimeException("Master with id: " + id + " not found");
+        }
+
+        return master;
     }
 
     @Override
@@ -51,8 +67,11 @@ public class MasterServiceImpl implements MasterService {
     }
 
     @Override
-    public MasterDto getMasterByMasterId(String MasterIdId) {
-        return null;
+    public MasterDto getMasterByMasterId(Long id) {
+        Master master = findById(id);
+        ModelMapper modelMapper=new ModelMapper();
+        MasterDto returnValue = modelMapper.map(master, MasterDto.class);
+        return returnValue;
     }
 
     @Override

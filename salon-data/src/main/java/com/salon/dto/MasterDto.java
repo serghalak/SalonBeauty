@@ -11,6 +11,7 @@ import java.util.Set;
 
 public class MasterDto implements Serializable{
 
+    private Long id;
     private String email;
     private String firstName;
     private String lastName;
@@ -28,6 +29,15 @@ public class MasterDto implements Serializable{
 //    public void setUserDtoList(List<UserDto> userDtoList) {
 //        this.userDtoList = userDtoList;
 //    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getEmail() {
         return email;

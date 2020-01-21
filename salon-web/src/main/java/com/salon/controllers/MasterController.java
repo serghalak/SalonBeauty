@@ -141,7 +141,7 @@ public class MasterController {
         ModelMapper modelMapper=new ModelMapper();
         UserMasterResponse  returnValue=  modelMapper.map(userMasterDto, UserMasterResponse.class);
         Link masterLink=linkTo(MasterController.class)
-                .slash("user").slash(userId).withSelfRel();
+                .slash(returnValue.getMaster().getId()).slash("master").withSelfRel();
          returnValue.add(masterLink);
         return returnValue ;
     }
@@ -149,7 +149,10 @@ public class MasterController {
     @GetMapping(path = "/{masterId}/master"
             , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public MasterResponse getMasterResponse(@PathVariable Long masterId){
-        //masterService.
-        return null;//returnValue;
+        MasterDto master = masterService.getMasterByMasterId(masterId);
+        ModelMapper modelMapper=new ModelMapper();
+        MasterResponse returnValue = modelMapper.map(master, MasterResponse.class);
+
+        return returnValue;
     }
 }

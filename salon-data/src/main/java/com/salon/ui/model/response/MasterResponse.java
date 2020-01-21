@@ -9,12 +9,21 @@ import java.util.Set;
 
 public class MasterResponse extends RepresentationModel {
 
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
 
     private Set<SpecializationResponse> specializations=new HashSet<>();//specializationResponse;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;

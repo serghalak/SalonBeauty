@@ -14,7 +14,7 @@ public interface MasterService extends CrudService<Master,Long> {
 
     MasterDto createMaster(MasterDto master);
     MasterDto getMaster(String masterName);
-    MasterDto getMasterByMasterId(String MasterIdId);
+    MasterDto getMasterByMasterId(Long id);
     //    UserDto getUserByUserName(String userName);
     List<MasterDto> getListMasters();
     MasterDto updateMaster(MasterDto user);
