@@ -6,18 +6,17 @@ package com.salon.controllers;
 //import com.salon.ui.model.response.UserResponse;
 //import org.springframework.beans.BeanUtils;
 //import org.springframework.beans.factory.annotation.Autowired;
-import com.salon.dto.UserDto;
+import com.salon.dto.UserClientDto;
 import com.salon.exceptions.OperationStatusModel;
 import com.salon.ui.model.request.RequestOperationName;
 import com.salon.exceptions.UserServiceException;
 import com.salon.services.UserService;
 import com.salon.ui.model.request.RequestOperationStatus;
 import com.salon.ui.model.request.UserRequest;
+import com.salon.ui.model.response.UserClientResponse;
 import com.salon.ui.model.response.UserResponse;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -27,12 +26,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Destination;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import org.springframework.hateoas.CollectionModel;
 
 @RestController
@@ -75,33 +73,35 @@ public class UserController {
     //get users with query string /users?page=1&limit=10
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE
             ,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
-    public /*List<UserResponse>*/CollectionModel<UserResponse>getUsers(
+    public /*List<UserResponse>*/CollectionModel<UserClientResponse>getUserClient(
             @RequestParam(value = "page",defaultValue = "0")Integer page
             ,@RequestParam(value = "limit" , defaultValue = "10")Integer limit){
 
 
-        List<UserResponse>returnValue=new ArrayList<>();
+        Set<UserClientResponse> returnValue=new HashSet<>();
 
-        List<UserDto>userResponses=userService.getUsers(page,limit);
+        Set<UserClientDto> userClients = userService.getUserClients(page, limit);
+        //Set<UserClientDto> userClientDto= userClients;
 
-        if(userResponses.isEmpty() || userResponses==null){
+        if(userClients.isEmpty() || userClients==null){
             String  message=messageSource.getMessage("user.userlistempty"
                     ,null, LocaleContextHolder.getLocale());
             throw new UserServiceException(message);
         }
 
         Link userLink=null;
-
-        for (UserDto userDto : userResponses){
-            UserResponse userResponse=new UserResponse();
-            BeanUtils.copyProperties(userDto,userResponse);
-
+        ModelMapper modelMapper=new ModelMapper();
+        for (UserClientDto userClientDto : userClients){
+            //UserResponse userResponse=new UserResponse();
+            //BeanUtils.copyProperties(userDto,userResponse);
+            UserClientResponse userClientResponse =
+                    modelMapper.map(userClientDto, UserClientResponse.class);
             //for link uses hateoas
-            userLink=linkTo(UserController.class).slash(userResponse.getUserId()).withSelfRel();
+            userLink=linkTo(UserClientController.class).slash(userClientResponse.getUserId()).withSelfRel();
             //userLink=linkTo(methodOn(UserController.class).getUsersAuthentication()).slash(userResponse.getUserId()).withSelfRel();
-            userResponse.add(userLink);
+            userClientResponse.add(userLink);
 
-            returnValue.add(userResponse);
+            returnValue.add(userClientResponse);
         }
 
         //it's the same that previous loop but using ModelMapper library
@@ -126,15 +126,17 @@ public class UserController {
     @GetMapping(value = "/{userId}"
             ,produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public UserResponse getUserByUserId(@PathVariable("userId")String userId){
-        UserDto userDb=userService.getUserByUserId(userId);
-        if(userDb==null){
-            String message=messageSource.getMessage(
-                    "user.usernotfound",null,LocaleContextHolder.getLocale());
-            throw new UsernameNotFoundException(message);
-        }
-        UserResponse userResponse=new UserResponse();
-        BeanUtils.copyProperties(userDb,userResponse);
-        return userResponse;
+//        UserClientDto userDb=userService.getUserByUserId(userId);
+//        if(userDb==null){
+//            String message=messageSource.getMessage(
+//                    "user.usernotfound",null,LocaleContextHolder.getLocale());
+//            throw new UsernameNotFoundException(message);
+//        }
+//
+//        ModelMapper modelMapper=new ModelMapper();
+//        UserResponse userResponse = modelMapper.map(userDb, UserResponse.class);
+//        return userResponse;
+        return null;
     }
 
     @PostMapping(
@@ -173,7 +175,7 @@ public class UserController {
         UserResponse userResponse=new UserResponse();
 
         //replace these two lines on the ModelMapper
-        UserDto userDto = new UserDto();
+        UserClientDto userDto = new UserClientDto();
         BeanUtils.copyProperties(userRequest,userDto);
 
 
@@ -206,7 +208,7 @@ public class UserController {
 //
 //        }
 
-        UserDto createdUser=userService.createUser(userDto);
+        UserClientDto createdUser=userService.createUser(userDto);
 
         BeanUtils.copyProperties(createdUser,userResponse);
 
@@ -235,9 +237,9 @@ public class UserController {
                     ,null,LocaleContextHolder.getLocale());
             throw new UserServiceException(message);
         }
-        UserDto userDto=new UserDto();
+        UserClientDto userDto=new UserClientDto();
         BeanUtils.copyProperties(userRequest,userDto);
-        UserDto userUpdated= userService.updateUser(userDto);
+        UserClientDto userUpdated= userService.updateUser(userDto);
         if(userUpdated==null){
             //throw new RuntimeException("Error during updating");
             String[] params=new String[]{userRequest.getUserName()};
@@ -267,7 +269,7 @@ public class UserController {
         }
 
 
-        UserDto userDto=new UserDto();
+        UserClientDto userDto=new UserClientDto();
         BeanUtils.copyProperties(user,userDto);
         userService.deleteUser(userDto);
         //userService.getUserByUserId(id);
@@ -294,7 +296,7 @@ public class UserController {
             throw new UserServiceException(message);
         }
 
-        UserDto userByCodeActivate = userService.getUserByCodeActivate(code);
+        UserClientDto userByCodeActivate = userService.getUserByCodeActivate(code);
         BeanUtils.copyProperties(userByCodeActivate,userResponse);
 
         return userResponse;

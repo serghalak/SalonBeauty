@@ -5,7 +5,7 @@ import com.salon.domain.Specialization;
 import com.salon.domain.User;
 import com.salon.dto.MasterDto;
 import com.salon.dto.SpecializationDto;
-import com.salon.dto.UserDto;
+import com.salon.dto.UserClientDto;
 import com.salon.repository.SpecializationRepo;
 import com.salon.repository.UserRepo;
 import com.salon.services.SpecializationService;
@@ -114,7 +114,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
-    public Set<SpecializationDto> getSpecializationByUser(UserDto user) {
+    public Set<SpecializationDto> getSpecializationByUser(UserClientDto user) {
         return getSpecializationMasterByUserName(user.getUserName());
     }
 

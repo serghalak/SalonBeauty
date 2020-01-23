@@ -6,11 +6,12 @@ import com.salon.common.RegistrationLink;
 import com.salon.common.Utils;
 import com.salon.domain.*;
 import com.salon.dto.SpecializationDto;
+import com.salon.dto.UserClientDto;
 import com.salon.dto.UserMasterDto;
 import com.salon.exceptions.UserServiceException;
 import com.salon.repository.UserRepo;
 import com.salon.services.UserService;
-import com.salon.dto.UserDto;
+import com.salon.dto.UserClientDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto createUser(UserDto user) {
+    public UserClientDto createUser(UserClientDto user) {
 
 //        if(userRepo.findUserByEmail(user.getEmail())!= null){
 //            throw new RuntimeException("user with email: " + user.getEmail()
@@ -84,8 +85,10 @@ public class UserServiceImpl implements UserService {
 //                    +" is already exists. Change your phone number");
 //        }
 
-        User userCreate=new User();
-        BeanUtils.copyProperties(user,userCreate);
+
+        //BeanUtils.copyProperties(user,userCreate);
+        ModelMapper modelMapper=new ModelMapper();
+        User userCreate=modelMapper.map(user, User.class);
         //userCreate.setPassword(user.getPassword());
         userCreate.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
@@ -93,13 +96,13 @@ public class UserServiceImpl implements UserService {
         //userCreate.setUserName(utils.getRandomUserName());
         Client client=null;
         Authority authority=null;
-        if(user.isClient()){
+        //if(user.isClient()){
             client=new Client();
             authority=new Authority();
             authority.setId(1L);
             authority.setRoleName("USER");
             userCreate.setAuthority(authority);
-        }
+        //}
 
 
         userCreate.setActivateCode(UUID.randomUUID().toString());
@@ -110,7 +113,7 @@ public class UserServiceImpl implements UserService {
         User userDb=userRepo.save(userCreate);
 
         //if email is exist
-        if(user.isClient()){
+        //if(user.isClient()){
             if (userCreate.getClient().getEmail() !=null){
                 String link= registrationLink.getAppHost()
                         +registrationLink.getAppName()
@@ -127,28 +130,29 @@ public class UserServiceImpl implements UserService {
                 String messageSubject=messageSource.getMessage("registration.user.activationcode"
                         ,null,LocaleContextHolder.getLocale());
                 mailSender.send(userCreate.getClient().getEmail(),messageSubject,messageLink);
-            }
+            //}
         }
 
 
-        UserDto userReturn=new UserDto();
+        UserClientDto userReturn=new UserClientDto();
+        //modelMapper.map(userDb,)
 
 //        if(userDb==null){
 //            throw new Exception("Cannot create user");
 //        }
 
         BeanUtils.copyProperties(userDb,userReturn);
-        if(user.isClient()){
+        //if(user.isClient()){
             BeanUtils.copyProperties(userDb.getClient(),userReturn);
 
 
-        }
+        //}
 
         return userReturn;
     }
 
     @Override
-    public UserDto getUserByUserId(String userId) {
+    public UserClientDto getUserClientByUserId(String userId) {
 
         User byUserId = userRepo.findByUserId(userId);
         if(byUserId==null ){
@@ -162,21 +166,32 @@ public class UserServiceImpl implements UserService {
                     ,null,LocaleContextHolder.getLocale());
             throw new UserServiceException(message);
         }
-
-        UserDto userDto=new UserDto();
-        BeanUtils.copyProperties(byUserId,userDto);
-        if(byUserId.getClient()!=null){
-            BeanUtils.copyProperties(byUserId.getClient(),userDto);
-        }else{
-            BeanUtils.copyProperties(byUserId.getMaster(),userDto);
+        if(byUserId.getClient()==null){
+            throw new RuntimeException("User is not client");
         }
 
-        return userDto;
+        //UserDto userDto=new UserDto();
+
+        ModelMapper modelMapper=new ModelMapper();
+        UserClientDto userClientDto = modelMapper.map(byUserId, UserClientDto.class);
+//        if(byUserId.getMaster()!=null && byUserId.getClient()==null){
+//            //userDto.setClient(false);
+//            throw new RuntimeException("User is not master");
+//        }
+
+        //BeanUtils.copyProperties(byUserId,userDto);
+//        if(byUserId.getClient()!=null){
+//            BeanUtils.copyProperties(byUserId.getClient(),userDto);
+//        }else{
+//            BeanUtils.copyProperties(byUserId.getMaster(),userDto);
+//        }
+
+        return userClientDto;
 
     }
 
     @Override
-    public UserDto getUser(String userName) {
+    public UserClientDto getUser(String userName) {
         User userByUserName = userRepo.findUserByUserName(userName);
         if(userByUserName==null){
             String[] params=new String[]{userName};
@@ -196,20 +211,20 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException(message);
         }
         //UserDetails userDetails = loadUserByUsername(email);
-        UserDto userDto=new UserDto();
+        UserClientDto userDto=new UserClientDto();
         BeanUtils.copyProperties(userByUserName,userDto);
         return userDto;
     }
 
     @Override
-    public List<UserDto> getListUsers() {
+    public List<UserClientDto> getListUsers() {
         Iterable<User> users = userRepo.findAll();
 //        //System.out.println(new ArrayList<User>());
-        List<UserDto>returnListUsers=new ArrayList<>();
+        List<UserClientDto>returnListUsers=new ArrayList<>();
 //
         for (User user:users){
             if(user.isActive()){
-                UserDto userDto=new UserDto();
+                UserClientDto userDto=new UserClientDto();
                 if(user.getClient()!=null){
                     BeanUtils.copyProperties(user.getClient(),userDto);
                 }else {
@@ -224,26 +239,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getUsers(Integer page, Integer limit) {
-        List<UserDto>returnListUsers=new ArrayList<>();
+    public Set<UserClientDto> getUserClients(Integer page, Integer limit) {
+        Set<UserClientDto>returnValue=new HashSet<>();
         Pageable pageableRequest= PageRequest.of(page,limit);
 
         Page<User>usersPage = userRepo.findByActive(true, pageableRequest);
         List<User> users = usersPage.getContent() ;
 
+        ModelMapper modelMapper=new ModelMapper();
         for (User user:users  ) {
-
-            UserDto userDto=new UserDto();
-            if(user.getClient()!=null){
-                BeanUtils.copyProperties(user.getClient(),userDto);
-            }else {
-                BeanUtils.copyProperties(user.getMaster(),userDto);
+            if(user.getClient()==null){
+                continue;
             }
-            BeanUtils.copyProperties(user,userDto);
-            returnListUsers.add(userDto);
-
+            UserClientDto userClientDto = modelMapper.map(user, UserClientDto.class);
+            returnValue.add(userClientDto);
         }
-        return returnListUsers;
+        return returnValue;
     }
 
     @Override
@@ -289,7 +300,7 @@ public class UserServiceImpl implements UserService {
         //Client client=null;
         //Master master=new MasterServiceImpl()
         Authority authority=null;
-        if(!userMasterDto.isClient()){
+        if(!userMasterDto.getClienBoolean()){
             //client=new Client();
             user.setClient(null);
             authority=new Authority();
@@ -438,7 +449,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDto updateUser(UserDto user) {
+    public UserClientDto updateUser(UserClientDto user) {
         if(user == null){
             //throw new RuntimeException("user is null");
             String message = messageSource.getMessage("user.usernamenotfound"
@@ -466,16 +477,17 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        if(user.isClient()){
-            userDb.getClient().setFirstName(user.getFirstName());
-            userDb.getClient().setLastName(user.getLastName());
-            userDb.getClient().setEmail(user.getEmail());
-            userDb.getClient().setPhoneNumber(user.getPhoneNumber());
-        }else{
-            userDb.getMaster().setFirstName(user.getFirstName());
-            userDb.getMaster().setLastName(user.getLastName());
-            userDb.getMaster().setEmail(user.getEmail());
-            userDb.getMaster().setPhoneNumber(user.getPhoneNumber());
+        if(true /*user.isClient()*/){
+            userDb.getClient().setFirstName(user.getClient().getFirstName());
+            userDb.getClient().setLastName(user.getClient().getLastName());
+            userDb.getClient().setEmail(user.getClient().getEmail());
+            userDb.getClient().setPhoneNumber(user.getClient().getPhoneNumber());
+        //}else{
+//            userDb.getMaster().setFirstName(user..getFirstName());
+//            userDb.getMaster().setLastName(user.getLastName());
+//            userDb.getMaster().setEmail(user.getEmail());
+//            userDb.getMaster().setPhoneNumber(user.getPhoneNumber());
+            throw new RuntimeException("User is not master");
         }
 
         if(user.getPassword()==null
@@ -499,7 +511,7 @@ public class UserServiceImpl implements UserService {
 
 
         }
-        UserDto returnUserDto=new UserDto();
+        UserClientDto returnUserDto=new UserClientDto();
         BeanUtils.copyProperties(updatedUser,returnUserDto);
 
         if(user.getClient()!=null){
@@ -514,7 +526,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser( UserDto user) {
+    public void deleteUser( UserClientDto user) {
         if(user==null){
             throw new RuntimeException("user is empty");
         }
@@ -552,15 +564,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserByUserId(String userId) {
-        UserDto userByUserId = getUserByUserId(userId);
-        deleteUser(userByUserId);
+//        UserClientDto userByUserId = getUserByUserId(userId);
+//        deleteUser(userByUserId);
     }
 
     //
 
 
     @Override
-    public UserDto getUserByCodeActivate(String code) {
+    public UserClientDto getUserByCodeActivate(String code) {
         User byActivateCode = userRepo.findByActivateCode(code);
         if(byActivateCode==null){
             //throw new RuntimeException("Activation code is wrong");
@@ -585,7 +597,7 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        UserDto userDto=new UserDto();
+        UserClientDto userDto=new UserClientDto();
 
         BeanUtils.copyProperties(userActivated,userDto);
         if(userActivated.getClient()!=null){

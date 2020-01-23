@@ -3,7 +3,7 @@ package com.salon.controllers;
 import com.salon.domain.Specialization;
 import com.salon.dto.MasterDto;
 import com.salon.dto.SpecializationDto;
-import com.salon.dto.UserDto;
+import com.salon.dto.UserClientDto;
 import com.salon.dto.UserMasterDto;
 import com.salon.services.MasterService;
 import com.salon.services.UserService;

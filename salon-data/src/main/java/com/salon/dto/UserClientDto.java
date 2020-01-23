@@ -1,9 +1,9 @@
 package com.salon.dto;
 
+
 import java.io.Serializable;
 
-
-public class UserDto implements Serializable {
+public class UserClientDto  implements Serializable{
 
     private Long id;
     private String userId;
@@ -11,8 +11,9 @@ public class UserDto implements Serializable {
     private String password;
     private String activateCode;
     private Boolean active=false;
-    private Boolean client=true;
+    private Boolean userIsClient=true;
 
+    private ClientDto client;
 
     public Long getId() {
         return id;
@@ -62,11 +63,20 @@ public class UserDto implements Serializable {
         this.active = active;
     }
 
-    public Boolean getClient() {
+
+    public Boolean getUserIsClient() {
+        return userIsClient;
+    }
+
+    public void setUserIsClient(Boolean userIsClient) {
+        userIsClient = userIsClient;
+    }
+
+    public ClientDto getClient() {
         return client;
     }
 
-    public void setClient(Boolean client) {
+    public void setClient(ClientDto client) {
         this.client = client;
     }
 }

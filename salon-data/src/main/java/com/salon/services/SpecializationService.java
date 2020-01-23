@@ -5,7 +5,7 @@ import com.salon.domain.Specialization;
 import com.salon.domain.User;
 import com.salon.dto.MasterDto;
 import com.salon.dto.SpecializationDto;
-import com.salon.dto.UserDto;
+import com.salon.dto.UserClientDto;
 
 import java.util.Set;
 
@@ -17,7 +17,7 @@ public interface SpecializationService
     Set<SpecializationDto> getSpecializationMasterByUserName(String userName);
 
     Set<SpecializationDto>getSpecializationByMaster(MasterDto master);
-    Set<SpecializationDto>getSpecializationByUser(UserDto user);
+    Set<SpecializationDto>getSpecializationByUser(UserClientDto user);
 
     SpecializationDto getSpecializationById(long id);
 

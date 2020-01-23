@@ -1,7 +1,7 @@
 package com.salon.controllers;
 
 import com.salon.dto.SpecializationDto;
-import com.salon.dto.UserDto;
+import com.salon.dto.UserClientDto;
 import com.salon.services.SpecializationService;
 import com.salon.services.UserService;
 import com.salon.ui.model.response.SpecializationResponse;
