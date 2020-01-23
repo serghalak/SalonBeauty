@@ -635,6 +635,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ClientDto getClientByClientId(Long clientId) {
+
         return null;
     }
 }
