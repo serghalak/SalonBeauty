@@ -5,9 +5,7 @@ import com.salon.common.MailSender;
 import com.salon.common.RegistrationLink;
 import com.salon.common.Utils;
 import com.salon.domain.*;
-import com.salon.dto.SpecializationDto;
-import com.salon.dto.UserClientDto;
-import com.salon.dto.UserMasterDto;
+import com.salon.dto.*;
 import com.salon.exceptions.UserServiceException;
 import com.salon.repository.UserRepo;
 import com.salon.services.UserService;
@@ -635,6 +633,8 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-
+    @Override
+    public ClientDto getClientByClientId(Long clientId) {
+        return null;
+    }
 }

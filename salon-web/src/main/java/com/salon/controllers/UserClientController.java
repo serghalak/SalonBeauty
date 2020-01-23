@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -79,20 +80,22 @@ public class UserClientController {
     }
 
     @GetMapping(value = "/{userId}"
-            ,produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public UserClientResponse getUserClientByUserId(@PathVariable("userId")String userId){
-        UserClientDto userDb=userService.getUserClientByUserId(userId);
-        if(userDb==null){
+            ,produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE,"application/hal+json"})
+    public EntityModel<UserClientResponse> getUserClientByUserId(@PathVariable("userId")String userId){
+        UserClientDto userClientDb=userService.getUserClientByUserId(userId);
+        if(userClientDb==null){
             String message=messageSource.getMessage(
                     "user.usernotfound",null,LocaleContextHolder.getLocale());
             throw new UsernameNotFoundException(message);
         }
-//        if(userDb.getClient()==null){
-//            throw new RuntimeException("user is not client");
-//        }
+
         ModelMapper modelMapper=new ModelMapper();
-        UserClientResponse userClientResponse = modelMapper.map(userDb, UserClientResponse.class);
-        return userClientResponse;
+        UserClientResponse userClientResponse = modelMapper.map(userClientDb, UserClientResponse.class);
+
+
+        Link userLink= linkTo(ClientController.class).slash(userClientResponse.getClient().getId()).withSelfRel();
+        userClientResponse.add(userLink);
+        return new EntityModel<>(userClientResponse);
     }
 
 }

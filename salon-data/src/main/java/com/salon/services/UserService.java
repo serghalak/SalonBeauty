@@ -1,9 +1,8 @@
 package com.salon.services;
 
-import com.salon.dto.SpecializationDto;
+import com.salon.domain.Client;
+import com.salon.dto.*;
 import com.salon.dto.UserClientDto;
-import com.salon.dto.UserClientDto;
-import com.salon.dto.UserMasterDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -18,6 +17,7 @@ public interface UserService extends UserDetailsService {
 
     Set<UserClientDto> getUserClients(Integer page, Integer limit);
     UserClientDto getUserClientByUserId(String userId);
+    ClientDto getClientByClientId(Long clientId);
     //-----------------------------------------------------
     UserClientDto createUser(UserClientDto user);
     UserClientDto getUser(String userName);
