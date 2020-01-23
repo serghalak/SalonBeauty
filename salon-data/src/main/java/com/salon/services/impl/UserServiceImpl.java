@@ -7,6 +7,7 @@ import com.salon.common.Utils;
 import com.salon.domain.*;
 import com.salon.dto.*;
 import com.salon.exceptions.UserServiceException;
+import com.salon.repository.ClientRepo;
 import com.salon.repository.UserRepo;
 import com.salon.services.UserService;
 import com.salon.dto.UserClientDto;
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
 
     //@Autowired
     private UserRepo userRepo;
+    private ClientRepo clientRepo;
     //@Autowired
     private Utils utils;
     //@Autowired
@@ -50,9 +52,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MessageSource messageSource;
 
-    public UserServiceImpl(UserRepo userRepo, Utils utils
+    public UserServiceImpl(UserRepo userRepo,ClientRepo clientRepo, Utils utils
             , BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepo = userRepo;
+        this.clientRepo=clientRepo;
         this.utils = utils;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -635,7 +638,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ClientDto getClientByClientId(Long clientId) {
-
-        return null;
+        Optional<Client> clientOptional = clientRepo.findById(clientId);
+        if(!clientOptional.isPresent()){
+            throw new RuntimeException("Client not found");
+        }
+        Client client = clientOptional.get();
+        ModelMapper modelMapper=new ModelMapper();
+        ClientDto returnValue = modelMapper.map(client, ClientDto.class);
+        return returnValue;
     }
 }
