@@ -301,7 +301,7 @@ public class UserServiceImpl implements UserService {
         //Client client=null;
         //Master master=new MasterServiceImpl()
         Authority authority=null;
-        if(!userMasterDto.getClienBoolean()){
+        if(!userMasterDto.getUserIsClien()){
             //client=new Client();
             user.setClient(null);
             authority=new Authority();
@@ -645,6 +645,22 @@ public class UserServiceImpl implements UserService {
         Client client = clientOptional.get();
         ModelMapper modelMapper=new ModelMapper();
         ClientDto returnValue = modelMapper.map(client, ClientDto.class);
+        return returnValue;
+    }
+
+    @Override
+    public UserClientDto getUserClientByClientId(long clientId){
+        Optional<Client> clientOptional = clientRepo.findById(clientId);
+        if(!clientOptional.isPresent()){
+            throw new RuntimeException("Client not found");
+        }
+        Client client = clientOptional.get();
+        User clientUser = client.getUser();
+        if (clientUser==null){
+            throw new RuntimeException("User not found");
+        }
+        ModelMapper modelMapper=new ModelMapper();
+        UserClientDto returnValue = modelMapper.map(clientUser, UserClientDto.class);
         return returnValue;
     }
 }

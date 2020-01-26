@@ -18,6 +18,8 @@ public interface UserService extends UserDetailsService {
     Set<UserClientDto> getUserClients(Integer page, Integer limit);
     UserClientDto getUserClientByUserId(String userId);
     ClientDto getClientByClientId(Long clientId);
+
+    UserClientDto getUserClientByClientId(long clientId) ;
     //-----------------------------------------------------
     UserClientDto createUser(UserClientDto user);
     UserClientDto getUser(String userName);

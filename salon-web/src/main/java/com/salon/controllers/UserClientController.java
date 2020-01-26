@@ -3,6 +3,7 @@ package com.salon.controllers;
 import com.salon.dto.UserClientDto;
 import com.salon.exceptions.UserServiceException;
 import com.salon.services.UserService;
+import com.salon.ui.model.response.ClientResponse;
 import com.salon.ui.model.response.UserClientResponse;
 import com.salon.ui.model.response.UserResponse;
 import org.modelmapper.ModelMapper;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("api/users/client")
@@ -42,9 +44,9 @@ public class UserClientController {
             ,@RequestParam(value = "limit" , defaultValue = "10")Integer limit){
 
         Set<UserClientResponse> returnValue=new HashSet<>();
-        Set<UserClientDto>userClientResponses=userService.getUserClients(page,limit);
+        Set<UserClientDto>userClientDtos=userService.getUserClients(page,limit);
 
-        if(userClientResponses.isEmpty() || userClientResponses==null){
+        if(userClientDtos.isEmpty() || userClientDtos==null){
             String  message=messageSource.getMessage("user.userlistempty"
                     ,null, LocaleContextHolder.getLocale());
             throw new UserServiceException(message);
@@ -52,11 +54,17 @@ public class UserClientController {
 
         Link userLink=null;
         ModelMapper modelMapper=new ModelMapper();
-        for (UserClientDto userClientDto : userClientResponses){
-            //UserResponse userResponse=new UserResponse();
-            //BeanUtils.copyProperties(userDto,userResponse);
+        for (UserClientDto userClientDto : userClientDtos){
+
             UserClientResponse userClientResponse=modelMapper.map(userClientDto,UserClientResponse.class);
             //for link uses hateoas
+
+            ClientResponse clientResponse = userClientResponse.getClient();
+            Link clientLink=linkTo(methodOn(UserClientController.class).getUserClientByUserId(userClientDto.getUserId()))
+                    .withRel("userClient");
+            clientResponse.add(clientLink);
+
+
             userLink=linkTo(UserClientController.class).slash(userClientResponse.getUserId()).withSelfRel();
             //userLink=linkTo(methodOn(UserController.class).getUsersAuthentication()).slash(userResponse.getUserId()).withSelfRel();
             userClientResponse.add(userLink);
@@ -94,6 +102,8 @@ public class UserClientController {
 
 
         Link userLink= linkTo(ClientController.class).slash(userClientResponse.getClient().getId()).withSelfRel();
+//        Link userLink1= linkTo(methodOn(ClientController.class)
+//                .getClientById(userClientResponse.getClient().getId())).withSelfRel();
         userClientResponse.add(userLink);
         return new EntityModel<>(userClientResponse);
     }
