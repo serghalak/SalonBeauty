@@ -8,6 +8,7 @@ import com.salon.domain.*;
 import com.salon.dto.*;
 import com.salon.exceptions.UserServiceException;
 import com.salon.repository.ClientRepo;
+import com.salon.repository.MasterRepo;
 import com.salon.repository.UserRepo;
 import com.salon.services.UserService;
 import com.salon.dto.UserClientDto;
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
     //@Autowired
     private UserRepo userRepo;
     private ClientRepo clientRepo;
+    private MasterRepo masterRepo;
     //@Autowired
     private Utils utils;
     //@Autowired
@@ -52,10 +54,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MessageSource messageSource;
 
-    public UserServiceImpl(UserRepo userRepo,ClientRepo clientRepo, Utils utils
+    public UserServiceImpl(UserRepo userRepo,ClientRepo clientRepo, MasterRepo masterRepo,Utils utils
             , BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepo = userRepo;
         this.clientRepo=clientRepo;
+        this.masterRepo=masterRepo;
         this.utils = utils;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -301,7 +304,7 @@ public class UserServiceImpl implements UserService {
         //Client client=null;
         //Master master=new MasterServiceImpl()
         Authority authority=null;
-        if(!userMasterDto.getUserIsClien()){
+        if(!userMasterDto.getUserIsClient()){
             //client=new Client();
             user.setClient(null);
             authority=new Authority();
@@ -373,10 +376,12 @@ public class UserServiceImpl implements UserService {
         if(userDb==null){
             throw new RuntimeException("User by userName: " + userName + " not found");
         }
+
         Master master = userDb.getMaster();
         if(master==null){
             throw new RuntimeException("User is not master");
         }
+
 //        Set<Specialization> specializations = master.getSpecializations();
 //        if(specializations==null || specializations.isEmpty() || specializations.size()==0){
 //            throw new RuntimeException("The master: "
@@ -385,7 +390,7 @@ public class UserServiceImpl implements UserService {
 //        }
         ModelMapper modelMapper=new ModelMapper();
         UserMasterDto returnValue = modelMapper.map(userDb, UserMasterDto.class);
-
+        returnValue.setUserIsClient(false);
         return returnValue;
     }
 
@@ -661,6 +666,23 @@ public class UserServiceImpl implements UserService {
         }
         ModelMapper modelMapper=new ModelMapper();
         UserClientDto returnValue = modelMapper.map(clientUser, UserClientDto.class);
+        return returnValue;
+    }
+
+    @Override
+    public UserMasterDto getUserMasterByMasterId(long masterId) {
+        Optional<Master> masterOptional = masterRepo.findById(masterId);
+        if(!masterOptional.isPresent()){
+            throw new RuntimeException("Client not found");
+        }
+
+        Master master=masterOptional.get();
+        User masterUser = master.getUser();
+        if (masterUser==null){
+            throw new RuntimeException("User not found");
+        }
+        ModelMapper modelMapper=new ModelMapper();
+        UserMasterDto returnValue = modelMapper.map(masterUser, UserMasterDto.class);
         return returnValue;
     }
 }

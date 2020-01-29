@@ -11,7 +11,7 @@ public class UserMasterDto implements Serializable {
     private String password;
     private String activateCode;
     private Boolean active=false;
-    private Boolean userIsClien=false;
+    private Boolean userIsClient=false;
 
     //private String password;
     //private String emailStatus;
@@ -66,12 +66,12 @@ public class UserMasterDto implements Serializable {
         this.active = active;
     }
 
-    public Boolean getUserIsClien() {
-        return userIsClien;
+    public Boolean getUserIsClient() {
+        return userIsClient;
     }
 
-    public void setUserIsClien(Boolean userIsClien) {
-        this.userIsClien = userIsClien;
+    public void setUserIsClient(Boolean userIsClient) {
+        this.userIsClient = userIsClient;
     }
 
     //    public MasterDto getMasterDto() {

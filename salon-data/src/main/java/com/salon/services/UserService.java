@@ -21,6 +21,11 @@ public interface UserService extends UserDetailsService {
 
     UserClientDto getUserClientByClientId(long clientId) ;
     //-----------------------------------------------------
+
+    UserMasterDto getUserMasterByMasterId(long masterId);
+
+
+
     UserClientDto createUser(UserClientDto user);
     UserClientDto getUser(String userName);
 

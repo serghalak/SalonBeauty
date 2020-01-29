@@ -48,4 +48,12 @@ public class Master extends Person /*PersonExtId*/ {
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
