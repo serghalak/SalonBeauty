@@ -11,7 +11,7 @@ public class UserDto implements Serializable {
     private String password;
     private String activateCode;
     private Boolean active=false;
-    private Boolean client=true;
+    private Boolean userIsClient=true;
 
 
     public Long getId() {
@@ -62,11 +62,11 @@ public class UserDto implements Serializable {
         this.active = active;
     }
 
-    public Boolean getClient() {
-        return client;
+    public Boolean getUserIsClient() {
+        return userIsClient;
     }
 
-    public void setClient(Boolean client) {
-        this.client = client;
+    public void setUserIsClient(Boolean userIsClient) {
+        this.userIsClient = userIsClient;
     }
 }

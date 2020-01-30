@@ -10,6 +10,7 @@ import com.salon.ui.model.response.SpecializationResponse;
 import com.salon.ui.model.response.UserMasterResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,10 +38,9 @@ public class UserMasterController {
     }
 
     @GetMapping(
-            path="/{userName}"
-            ,consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
-            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public UserMasterResponse getUserMasterByUserName(@PathVariable String userName){
+            path="/username/{userName}"
+            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
+    public EntityModel<UserMasterResponse> getUserMasterByUserName(@PathVariable String userName){
 
         if(userName.equals("") || userName.isEmpty() || userName==null){
             throw new RuntimeException("User name is wrong ");
@@ -51,13 +51,42 @@ public class UserMasterController {
             throw new RuntimeException("User with user name: "+userName +" is not found");
         }
 
+        UserMasterResponse returnValue = getUserMaster(userMasterDto);
+
+
+        return new EntityModel<>(returnValue);
+
+
+    }
+
+    @GetMapping(
+            path="/userid/{userId}"
+            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
+    public EntityModel<UserMasterResponse> getUserMasterByUserId(@PathVariable String userId) {
+
+        if (userId.equals("") || userId.isEmpty() || userId == null) {
+            throw new RuntimeException("User id is wrong ");
+        }
+        UserMasterDto userMasterDto = userService.getUserMasterByUserId(userId);
+
+        if (userMasterDto == null) {
+            throw new RuntimeException("User with user id: " + userId + " is not found");
+        }
+
+        UserMasterResponse returnValue = getUserMaster(userMasterDto);
+        return new EntityModel<>(returnValue);
+    }
+
+    private UserMasterResponse getUserMaster(UserMasterDto userMasterDto){
 
         Set<SpecializationResponse> specializationResponses=new HashSet<>();
         ModelMapper modelMapper=new ModelMapper();
         for(SpecializationDto specializationDto : userMasterDto.getMaster().getSpecializations() ){
 
-            Link specializationLink=linkTo(SpecializationController.class)
-                    .slash(specializationDto.getId()).withSelfRel();
+            Link specializationLink=linkTo(
+                    methodOn(SpecializationController.class)
+                            .getSpecialization(specializationDto.getId())).withSelfRel();
+                    //.slash(specializationDto.getId()).withSelfRel();
             SpecializationResponse specializationResponse = modelMapper.map(specializationDto, SpecializationResponse.class);
             specializationResponse.add(specializationLink);
             specializationResponses.add(specializationResponse);
@@ -75,56 +104,12 @@ public class UserMasterController {
                 .withSelfRel();
         returnValue.add(userMasterLink);
         return returnValue;
-
-
-//        if(userDto.isClient()){
-//            throw new RuntimeException("The userName: " + userName + " is not master");
-//        }
-//        MasterDto masterDto=masterService.getMaster(userDto.getUserName());
-//        if(userMasterDto==null){
-//            throw new RuntimeException("The userName: "+userName+" is wrong");
-//        }
-//
-//        ModelMapper modelMapper=new ModelMapper();
-//        UserMasterResponse  returnValue=  modelMapper.map(userMasterDto, UserMasterResponse.class);
-//
-//
-//        return returnValue ;
     }
-
-    @GetMapping(
-            path="/user/{userId}"
-            ,consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
-            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public UserMasterResponse getUserMasterByUserId(@PathVariable String userId){
-        if(userId.equals("") || userId.isEmpty() || userId==null){
-            throw new RuntimeException("User id is wrong ");
-        }
-        UserMasterDto userMasterDto = userService.getUserMasterByUserId(userId);
-
-        if(userMasterDto==null){
-            throw new RuntimeException("User with user id: "+userId +" is not found");
-        }
-
-
-//        if(userDto.isClient()){
-//            throw new RuntimeException("The userName: " + userName + " is not master");
-//        }
-//        MasterDto masterDto=masterService.getMaster(userDto.getUserName());
-//        if(userMasterDto==null){
-//            throw new RuntimeException("The userName: "+userName+" is wrong");
-//        }
-
-        ModelMapper modelMapper=new ModelMapper();
-        UserMasterResponse  returnValue=  modelMapper.map(userMasterDto, UserMasterResponse.class);
-        Link masterLink=linkTo(MasterController.class)
-                .slash(returnValue.getMaster().getId()).slash("master").withSelfRel();
-        returnValue.add(masterLink);
-        return returnValue ;
-    }
-
-
-
-
 
 }
+
+
+
+
+
+
