@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Master extends Person /*PersonExtId*/ {
-
-
+public class Master extends IdEntity /*PersonExtId*/ {
 
     @ManyToMany
     @JoinTable(name = "master_specialization"
@@ -19,8 +17,8 @@ public class Master extends Person /*PersonExtId*/ {
     private Set<Specialization> specializations=new HashSet<>();
 
 
-    @OneToOne(mappedBy = "master")
-    private User user;
+//    @OneToOne(mappedBy = "master")
+//    private User user;
 
     @OneToMany(mappedBy = "master")
     private List<Appointment> appointments=new ArrayList<>();
@@ -32,6 +30,18 @@ public class Master extends Person /*PersonExtId*/ {
 //    public void setId(Long id) {
 //        this.setId(id);
 //    }
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "person_id",referencedColumnName = "id")
+    private Person person;
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
     public Set<Specialization> getSpecializations() {
         return specializations;
@@ -49,11 +59,11 @@ public class Master extends Person /*PersonExtId*/ {
         this.appointments = appointments;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 }

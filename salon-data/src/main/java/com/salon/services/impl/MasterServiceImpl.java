@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Service
-public class MasterServiceImpl implements MasterService {
+//@Service
+public class MasterServiceImpl /*implements MasterService*/ {
 
     MasterRepo masterRepo;
 
@@ -20,12 +20,12 @@ public class MasterServiceImpl implements MasterService {
         this.masterRepo = masterRepo;
     }
 
-    @Override
+    //@Override
     public Set<Master> findAll() {
         return null;
     }
 
-    @Override
+    //@Override
     public Master findById(Long id) {
         Optional<Master> masterDb = masterRepo.findById(id);
         Master master=masterDb.get();
@@ -36,37 +36,37 @@ public class MasterServiceImpl implements MasterService {
         return master;
     }
 
-    @Override
+    //@Override
     public Master save(Master object) {
         return null;
     }
 
-    @Override
+    //@Override
     public void delete(Master object) {
 
     }
 
-    @Override
+    //@Override
     public void deleteById(Long aLong) {
 
     }
 
-    @Override
+    //@Override
     public Set<Master> findBySpesialization(String specialization) {
         return null;
     }
 
-    @Override
+    //@Override
     public MasterDto createMaster(MasterDto master) {
         return null;
     }
 
-    @Override
+    //@Override
     public MasterDto getMaster(String masterName) {
         return null;
     }
 
-    @Override
+    //@Override
     public MasterDto getMasterByMasterId(Long id) {
         Master master = findById(id);
         ModelMapper modelMapper=new ModelMapper();
@@ -74,27 +74,27 @@ public class MasterServiceImpl implements MasterService {
         return returnValue;
     }
 
-    @Override
+    //@Override
     public List<MasterDto> getListMasters() {
         return null;
     }
 
-    @Override
+    //@Override
     public MasterDto updateMaster(MasterDto user) {
         return null;
     }
 
-    @Override
+    //@Override
     public void deleteMaster(MasterDto user) {
 
     }
 
-    @Override
+    //@Override
     public void deleteMasterByMasterId(String masterId) {
 
     }
 
-    @Override
+    //@Override
     public List<MasterDto> getMasters(Integer page, Integer limit) {
         return null;
     }

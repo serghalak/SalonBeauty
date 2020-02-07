@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-//@Table
-public class Client extends Person /*PersonExtId*/ {
+public class Client extends IdEntity /*PersonExtId*/ {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,12 +18,23 @@ public class Client extends Person /*PersonExtId*/ {
     @OneToMany(mappedBy = "client")
     private List<Appointment> appointments=new ArrayList<>();
 
-    @OneToOne(mappedBy = "client")
-    private User user;
+//    @OneToOne(mappedBy = "client")
+//    private Client client;
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "person_id",referencedColumnName = "id")
+    private Person person;
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
 
-
-//    public Long getId() {
+    //    public Long getId() {
 //        return id;
 //    }
 //
@@ -40,11 +50,11 @@ public class Client extends Person /*PersonExtId*/ {
         this.appointments = appointments;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 }

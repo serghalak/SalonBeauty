@@ -14,13 +14,14 @@ import java.util.List;
 @Repository
 public interface UserRepo extends PagingAndSortingRepository<User, Long> {
 
-    //User findUserByEmail(String email);
-    User findUserById(Long id);
-    //User findUserByUserName(String userName);
-    User findUserByUserId(String userId);
-    User findUserByUserName(String userName);
+    User findByMaster_Email(String email);
+    User findByClient_Email(String email);
+
+    //User findById(Long id);
+    User findByUserName(String userName);
     User findByUserId(String userId);
     User findByActivateCode(String code);
-    //User findUserByPhoneNumber(String phoneNumber);
+    User findByMaster_PhoneNumber(String phoneNumber);
+    User findByClient_PhoneNumber(String phoneNumber);
     Page<User> findByActive(Boolean isActive, Pageable pageable);
 }

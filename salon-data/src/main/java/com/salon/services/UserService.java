@@ -12,37 +12,28 @@ import java.util.Set;
 //import com.salon.dto.UserDto;
 
 
-public interface UserService extends UserDetailsService {
+public interface UserService extends UserDetailsService,CrudService<UserDto,Long> {
 
+    UserDto getUser(String userName);
+    Set<UserDto> getUserSet();
+    UserDto getUserByUserId(String userId);
+//    Set<UserClientDto> getUserClients(Integer page, Integer limit);
+//
+//    ClientDto getClientByClientId(Long clientId);
+//    UserClientDto getUserClientByClientId(long clientId) ;
+//    UserClientDto createUser(UserClientDto user);
+//    UserClientDto getUser(String userName);
 
-    Set<UserClientDto> getUserClients(Integer page, Integer limit);
-    UserClientDto getUserClientByUserId(String userId);
-    ClientDto getClientByClientId(Long clientId);
-
-    UserClientDto getUserClientByClientId(long clientId) ;
+//    UserClientDto updateUser(UserClientDto user);
+//    UserClientDto getUserByCodeActivate(String code);
+      //void deleteUser(UserClientDto user);
     //-----------------------------------------------------
 
-    UserMasterDto getUserMasterByMasterId(long masterId);
+//    UserMasterDto getUserMasterByMasterId(long masterId);
+//    UserMasterDto createUserMaster(UserMasterDto userMasterDto);
+//    UserMasterDto getUserMasterByUserName(String userName);
+//    UserMasterDto getUserMasterByUserId(String userId);
+//    Set<SpecializationDto> getSpecializations(String userName);
 
-
-
-    UserClientDto createUser(UserClientDto user);
-    UserClientDto getUser(String userName);
-
-//    UserDto getUserByUserName(String userName);
-    List<UserClientDto> getListUsers();
-    UserClientDto updateUser(UserClientDto user);
-    UserClientDto getUserByCodeActivate(String code);
-
-    void deleteUser(UserClientDto user);
-    void deleteUserByUserId(String userId);
-
-
-
-
-    UserMasterDto createUserMaster(UserMasterDto userMasterDto);
-    UserMasterDto getUserMasterByUserName(String userName);
-    UserMasterDto getUserMasterByUserId(String userId);
-
-    Set<SpecializationDto> getSpecializations(String userName);
+    //void deleteUserByUserId(String userId);
 }

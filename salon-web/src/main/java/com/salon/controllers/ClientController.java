@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-@RestController
-@RequestMapping("api/clients")
+//@RestController
+//@RequestMapping("api/clients")
 public class ClientController {
 
     private UserService userService;
@@ -32,27 +32,27 @@ public class ClientController {
 
     }
 
-    @GetMapping(path = "/{clientId}"
-            ,produces = {MediaType.APPLICATION_JSON_VALUE
-                ,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
-    public ClientResponse getClientById(@PathVariable Long clientId){
-        ClientDto client = userService.getClientByClientId(clientId);
-        UserClientDto userClient = userService.getUserClientByClientId(clientId);
-        if(client==null){
-            throw new RuntimeException("Client not found");
-        }
-        if(userClient==null){
-            throw new RuntimeException("User for client: " + client.getFirstName()+" " +client.getLastName()+" not found");
-        }
-
-
-        ModelMapper modelMapper=new ModelMapper();
-        ClientResponse returnValue = modelMapper.map(client, ClientResponse.class);
-        Link link=linkTo(ClientController.class).slash(clientId).withSelfRel();
-        Link userLink=linkTo(UserClientController.class).slash(userClient.getUserId()).withRel("user");
-        returnValue.add(link,userLink);
-
-        return returnValue;
-    }
+//    @GetMapping(path = "/{clientId}"
+//            ,produces = {MediaType.APPLICATION_JSON_VALUE
+//                ,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
+//    public ClientResponse getClientById(@PathVariable Long clientId){
+//        ClientDto client = userService.getClientByClientId(clientId);
+//        UserClientDto userClient = userService.getUserClientByClientId(clientId);
+//        if(client==null){
+//            throw new RuntimeException("Client not found");
+//        }
+//        if(userClient==null){
+//            throw new RuntimeException("User for client: " + client.getFirstName()+" " +client.getLastName()+" not found");
+//        }
+//
+//
+//        ModelMapper modelMapper=new ModelMapper();
+//        ClientResponse returnValue = modelMapper.map(client, ClientResponse.class);
+//        Link link=linkTo(ClientController.class).slash(clientId).withSelfRel();
+//        Link userLink=linkTo(UserClientController.class).slash(userClient.getUserId()).withRel("user");
+//        returnValue.add(link,userLink);
+//
+//        return returnValue;
+//    }
 
 }

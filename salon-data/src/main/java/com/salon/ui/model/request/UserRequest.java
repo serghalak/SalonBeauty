@@ -10,17 +10,8 @@ public class UserRequest /*extends Person *//*PersonExt*/ {
     private String password;
     private String userName;
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phoneNumber;
+    private boolean userIsClient=true;
 
-    private boolean isClient=true;
-
-    //private ClientRequest clientRequest;
-
-
-    // get and set--------------------------------------------------
     public String getUserId() {
         return userId;
     }
@@ -37,14 +28,6 @@ public class UserRequest /*extends Person *//*PersonExt*/ {
         this.password = password;
     }
 
-    public boolean isClient() {
-        return isClient;
-    }
-
-    public void setClient(boolean client) {
-        isClient = client;
-    }
-
     public String getUserName() {
         return userName;
     }
@@ -53,44 +36,11 @@ public class UserRequest /*extends Person *//*PersonExt*/ {
         this.userName = userName;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public boolean isUserIsClient() {
+        return userIsClient;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setUserIsClient(boolean userIsClient) {
+        this.userIsClient = userIsClient;
     }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-
-//    public ClientRequest getClientRequest() {
-//        return clientRequest;
-//    }
-//
-//    public void setClientRequest(ClientRequest clientRequest) {
-//        this.clientRequest = clientRequest;
-//    }
 }

@@ -23,8 +23,8 @@ import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-@RestController
-@RequestMapping("api/specializations")
+//@RestController
+//@RequestMapping("api/specializations")
 public class SpecializationController {
 
 

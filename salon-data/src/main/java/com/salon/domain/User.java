@@ -35,7 +35,6 @@ public class User extends IdEntity implements UserDetails {
     private String userId;
 
 
-
     //    @Column(nullable = false,length =100 )
 //    private String password;
 
@@ -51,22 +50,33 @@ public class User extends IdEntity implements UserDetails {
     @JoinColumn(name = "authority_id",referencedColumnName = "id")
     private Authority authority;
 
+//    @OneToOne(cascade = {CascadeType.ALL})
+//        //This cascade use because you have a collection in your entity,
+//        // and that collection has one or more items which are not present in the database.
+//        // By specifying the above options you tell hibernate to save them to the database
+//        // when saving their parent.
+//    @JoinColumn(name = "client_id",referencedColumnName = "id")
+//    private Client client;
+//
+//
+//    @OneToOne(cascade = {CascadeType.ALL})
+//    @JoinColumn(name = "master_id",referencedColumnName = "id")
+//    private Master master;
+
     @OneToOne(cascade = {CascadeType.ALL})
-        //This cascade use because you have a collection in your entity,
-        // and that collection has one or more items which are not present in the database.
-        // By specifying the above options you tell hibernate to save them to the database
-        // when saving their parent.
-    @JoinColumn(name = "client_id",referencedColumnName = "id")
-    private Client client;
+    @JoinColumn(name = "person_id",referencedColumnName = "id")
+    private Person person;
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
 
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "master_id",referencedColumnName = "id")
-    private Master master;
-
-
-
-//    public Long getId() {
+    //    public Long getId() {
 //        return id;
 //    }
 //
@@ -131,21 +141,21 @@ public class User extends IdEntity implements UserDetails {
         this.authority = authority;
     }
 
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public Master getMaster() {
-        return master;
-    }
-
-    public void setMaster(Master master) {
-        this.master = master;
-    }
+//    public Client getClient() {
+//        return client;
+//    }
+//
+//    public void setClient(Client client) {
+//        this.client = client;
+//    }
+//
+//    public Master getMaster() {
+//        return master;
+//    }
+//
+//    public void setMaster(Master master) {
+//        this.master = master;
+//    }
 
 
     /*---------------------------------------------------------------------------*/

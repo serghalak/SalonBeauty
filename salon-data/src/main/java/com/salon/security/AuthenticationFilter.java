@@ -4,6 +4,7 @@ package com.salon.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salon.SpringApplicationContext;
 import com.salon.dto.UserClientDto;
+import com.salon.dto.UserDto;
 import com.salon.security.SecurityConstants;
 import com.salon.services.UserService;
 import com.salon.ui.model.request.UserRegisterData;
@@ -77,7 +78,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(SignatureAlgorithm.HS512, securityProperty.getTokenSecret())
                 .compact();
         UserService userService= (UserService) SpringApplicationContext.getBean("userServiceImpl");
-        UserClientDto userDto=userService.getUser(userName);
+        //UserClientDto userDto=userService.getUser(userName);
+        UserDto userDto=userService.getUser(userName);
+
         String userId = userDto.getUserId();
 
         response.addHeader(securityProperty.getHeaderString(), securityProperty.getTokenPrefix()+token);

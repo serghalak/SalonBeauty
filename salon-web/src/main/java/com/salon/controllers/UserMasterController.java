@@ -24,8 +24,8 @@ import java.util.Set;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
-@RequestMapping("api/users/master")
+//@RestController
+//@RequestMapping("api/users/master")
 public class UserMasterController {
     private UserService userService;
     private MessageSource messageSource;
@@ -36,75 +36,74 @@ public class UserMasterController {
         this.masterService=masterService;
         this.messageSource = messageSource;
     }
+//
+//    @GetMapping(
+//            path="/username/{userName}"
+//            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
+//    public EntityModel<UserMasterResponse> getUserMasterByUserName(@PathVariable String userName){
+//
+//        if(userName.equals("") || userName.isEmpty() || userName==null){
+//            throw new RuntimeException("User name is wrong ");
+//        }
+//        UserMasterDto userMasterDto = userService.getUserMasterByUserName(userName);
+//
+//        if(userMasterDto==null){
+//            throw new RuntimeException("User with user name: "+userName +" is not found");
+//        }
+//
+//        UserMasterResponse returnValue = getUserMaster(userMasterDto);
+//
+//        return new EntityModel<>(returnValue);
+//
+//
+//    }
 
-    @GetMapping(
-            path="/username/{userName}"
-            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
-    public EntityModel<UserMasterResponse> getUserMasterByUserName(@PathVariable String userName){
+//    @GetMapping(
+//            path="/userid/{userId}"
+//            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
+//    public EntityModel<UserMasterResponse> getUserMasterByUserId(@PathVariable String userId) {
+//
+//        if (userId.equals("") || userId.isEmpty() || userId == null) {
+//            throw new RuntimeException("User id is wrong ");
+//        }
+//        UserMasterDto userMasterDto = userService.getUserMasterByUserId(userId);
+//
+//        if (userMasterDto == null) {
+//            throw new RuntimeException("User with user id: " + userId + " is not found");
+//        }
+//
+//        UserMasterResponse returnValue = getUserMaster(userMasterDto);
+//        return new EntityModel<>(returnValue);
+//    }
 
-        if(userName.equals("") || userName.isEmpty() || userName==null){
-            throw new RuntimeException("User name is wrong ");
-        }
-        UserMasterDto userMasterDto = userService.getUserMasterByUserName(userName);
-
-        if(userMasterDto==null){
-            throw new RuntimeException("User with user name: "+userName +" is not found");
-        }
-
-        UserMasterResponse returnValue = getUserMaster(userMasterDto);
-
-
-        return new EntityModel<>(returnValue);
-
-
-    }
-
-    @GetMapping(
-            path="/userid/{userId}"
-            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
-    public EntityModel<UserMasterResponse> getUserMasterByUserId(@PathVariable String userId) {
-
-        if (userId.equals("") || userId.isEmpty() || userId == null) {
-            throw new RuntimeException("User id is wrong ");
-        }
-        UserMasterDto userMasterDto = userService.getUserMasterByUserId(userId);
-
-        if (userMasterDto == null) {
-            throw new RuntimeException("User with user id: " + userId + " is not found");
-        }
-
-        UserMasterResponse returnValue = getUserMaster(userMasterDto);
-        return new EntityModel<>(returnValue);
-    }
-
-    private UserMasterResponse getUserMaster(UserMasterDto userMasterDto){
-
-        Set<SpecializationResponse> specializationResponses=new HashSet<>();
-        ModelMapper modelMapper=new ModelMapper();
-        for(SpecializationDto specializationDto : userMasterDto.getMaster().getSpecializations() ){
-
-            Link specializationLink=linkTo(
-                    methodOn(SpecializationController.class)
-                            .getSpecialization(specializationDto.getId())).withSelfRel();
-                    //.slash(specializationDto.getId()).withSelfRel();
-            SpecializationResponse specializationResponse = modelMapper.map(specializationDto, SpecializationResponse.class);
-            specializationResponse.add(specializationLink);
-            specializationResponses.add(specializationResponse);
-
-        }
-
-        MasterResponse masterResponse= modelMapper.map(userMasterDto.getMaster(), MasterResponse.class);
-        masterResponse.setSpecializations(specializationResponses);
-        Link masterLink=linkTo(methodOn(MasterController.class).getMasterResponse(masterResponse.getId()))
-                .withRel("masterResponse");
-        masterResponse.add(masterLink);
-        UserMasterResponse returnValue = modelMapper.map(userMasterDto, UserMasterResponse.class);
-        returnValue.setMaster(masterResponse);
-        Link userMasterLink=linkTo(methodOn(UserMasterController.class).getUserMasterByUserName(returnValue.getUserName()))
-                .withSelfRel();
-        returnValue.add(userMasterLink);
-        return returnValue;
-    }
+//    private UserMasterResponse getUserMaster(UserMasterDto userMasterDto){
+//
+//        Set<SpecializationResponse> specializationResponses=new HashSet<>();
+//        ModelMapper modelMapper=new ModelMapper();
+//        for(SpecializationDto specializationDto : userMasterDto.getMaster().getSpecializations() ){
+//
+//            Link specializationLink=linkTo(
+//                    methodOn(SpecializationController.class)
+//                            .getSpecialization(specializationDto.getId())).withSelfRel();
+//                    //.slash(specializationDto.getId()).withSelfRel();
+//            SpecializationResponse specializationResponse = modelMapper.map(specializationDto, SpecializationResponse.class);
+//            specializationResponse.add(specializationLink);
+//            specializationResponses.add(specializationResponse);
+//
+//        }
+//
+//        MasterResponse masterResponse= modelMapper.map(userMasterDto.getMaster(), MasterResponse.class);
+//        masterResponse.setSpecializations(specializationResponses);
+//        Link masterLink=linkTo(methodOn(MasterController.class).getMasterResponse(masterResponse.getId()))
+//                .withRel("masterResponse");
+//        masterResponse.add(masterLink);
+//        UserMasterResponse returnValue = modelMapper.map(userMasterDto, UserMasterResponse.class);
+//        returnValue.setMaster(masterResponse);
+//        Link userMasterLink=linkTo(methodOn(UserMasterController.class).getUserMasterByUserName(returnValue.getUserName()))
+//                .withSelfRel();
+//        returnValue.add(userMasterLink);
+//        return returnValue;
+//    }
 
 }
 

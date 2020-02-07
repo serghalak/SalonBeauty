@@ -8,6 +8,7 @@ public class UserResponse extends RepresentationModel  /*extends Person*/ /*Pers
 
     private String userId;
     private String userName;
+    private Boolean active;
     private Boolean userIsClient=true;
 
     public String getUserId() {
@@ -24,6 +25,14 @@ public class UserResponse extends RepresentationModel  /*extends Person*/ /*Pers
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Boolean getUserIsClient() {

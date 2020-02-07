@@ -25,8 +25,8 @@ import java.util.Set;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@RestController
-@RequestMapping("api/users/client")
+//@RestController
+//@RequestMapping("api/users/client")
 public class UserClientController {
 
     private UserService userService;
@@ -37,75 +37,78 @@ public class UserClientController {
         this.messageSource = messageSource;
     }
 
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE
-            ,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
-    public /*List<UserResponse>*/CollectionModel<UserClientResponse> getUserClients(
-            @RequestParam(value = "page",defaultValue = "0")Integer page
-            ,@RequestParam(value = "limit" , defaultValue = "10")Integer limit){
-
-        Set<UserClientResponse> returnValue=new HashSet<>();
-        Set<UserClientDto>userClientDtos=userService.getUserClients(page,limit);
-
-        if(userClientDtos.isEmpty() || userClientDtos==null){
-            String  message=messageSource.getMessage("user.userlistempty"
-                    ,null, LocaleContextHolder.getLocale());
-            throw new UserServiceException(message);
-        }
-
-        Link userLink=null;
-        ModelMapper modelMapper=new ModelMapper();
-        for (UserClientDto userClientDto : userClientDtos){
-
-            UserClientResponse userClientResponse=modelMapper.map(userClientDto,UserClientResponse.class);
-            //for link uses hateoas
-
-            ClientResponse clientResponse = userClientResponse.getClient();
-            Link clientLink=linkTo(methodOn(UserClientController.class).getUserClientByUserId(userClientDto.getUserId()))
-                    .withRel("userClient");
-            clientResponse.add(clientLink);
-
-
-            userLink=linkTo(UserClientController.class).slash(userClientResponse.getUserId()).withSelfRel();
-            //userLink=linkTo(methodOn(UserController.class).getUsersAuthentication()).slash(userResponse.getUserId()).withSelfRel();
-            userClientResponse.add(userLink);
-
-            returnValue.add(userClientResponse);
-        }
-
-        //it's the same that previous loop but using ModelMapper library
-//        java.lang.reflect.Type listType=new TypeToken<List<UserResponse>>() {}.getType();
+//    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE
+//            ,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
+//    public /*List<UserResponse>*/CollectionModel<UserClientResponse> getUserClients(
+//            @RequestParam(value = "page",defaultValue = "0")Integer page
+//            ,@RequestParam(value = "limit" , defaultValue = "10")Integer limit){
+//
+//        Set<UserClientResponse> returnValue=new HashSet<>();
+//        Set<UserClientDto>userClientDtos=userService.getUserClients(page,limit);
+//
+//        if(userClientDtos.isEmpty() || userClientDtos==null){
+//            String  message=messageSource.getMessage("user.userlistempty"
+//                    ,null, LocaleContextHolder.getLocale());
+//            throw new UserServiceException(message);
+//        }
+//
+//        Link userLink=null;
 //        ModelMapper modelMapper=new ModelMapper();
-//        returnValue=modelMapper.map(userResponses,listType);
+//        for (UserClientDto userClientDto : userClientDtos){
+//
+//            UserClientResponse userClientResponse=modelMapper.map(userClientDto,UserClientResponse.class);
+//            //for link uses hateoas
+//
+//            ClientResponse clientResponse = userClientResponse.getClient();
+//            Link clientLink=linkTo(methodOn(UserClientController.class).getUserClientByUserId(userClientDto.getUserId()))
+//                    .withRel("userClient");
+//            clientResponse.add(clientLink);
+//
+//
+//            userLink=linkTo(UserClientController.class).slash(userClientResponse.getUserId()).withSelfRel();
+//            //userLink=linkTo(methodOn(UserController.class).getUsersAuthentication()).slash(userResponse.getUserId()).withSelfRel();
+//            userClientResponse.add(userLink);
+//
+//            returnValue.add(userClientResponse);
+//        }
+//
+//        //it's the same that previous loop but using ModelMapper library
+////        java.lang.reflect.Type listType=new TypeToken<List<UserResponse>>() {}.getType();
+////        ModelMapper modelMapper=new ModelMapper();
+////        returnValue=modelMapper.map(userResponses,listType);
+//
+//        //return returnValue;
+//
+//        //for ne hateoas
+//        //ResourceSupport is now RepresentationModel
+//        //Resource<T> is now EntityModel<T>
+//        //Resources<T> is now CollectionModel<T>
+//        //PagedResources<T> is now PagedModel<T>
+//        return new CollectionModel<>(returnValue);
+//    }
 
-        //return returnValue;
-
-        //for ne hateoas
-        //ResourceSupport is now RepresentationModel
-        //Resource<T> is now EntityModel<T>
-        //Resources<T> is now CollectionModel<T>
-        //PagedResources<T> is now PagedModel<T>
-        return new CollectionModel<>(returnValue);
-    }
-
-    @GetMapping(value = "/{userId}"
-            ,produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE,"application/hal+json"})
-    public EntityModel<UserClientResponse> getUserClientByUserId(@PathVariable("userId")String userId){
-        UserClientDto userClientDb=userService.getUserClientByUserId(userId);
-        if(userClientDb==null){
-            String message=messageSource.getMessage(
-                    "user.usernotfound",null,LocaleContextHolder.getLocale());
-            throw new UsernameNotFoundException(message);
-        }
-
-        ModelMapper modelMapper=new ModelMapper();
-        UserClientResponse userClientResponse = modelMapper.map(userClientDb, UserClientResponse.class);
+//    @GetMapping(value = "/{userId}"
+//            ,produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE,"application/hal+json"})
+//    public EntityModel<UserClientResponse> getUserClientByUserId(@PathVariable("userId")String userId){
+//        UserClientDto userClientDb=userService.getUserClientByUserId(userId);
+//        if(userClientDb==null){
+//            String message=messageSource.getMessage(
+//                    "user.usernotfound",null,LocaleContextHolder.getLocale());
+//            throw new UsernameNotFoundException(message);
+//        }
+//
+//        ModelMapper modelMapper=new ModelMapper();
+//        UserClientResponse userClientResponse = modelMapper.map(userClientDb, UserClientResponse.class);
+//
+//
+//        Link userLink= linkTo(ClientController.class).slash(userClientResponse.getClient().getId()).withSelfRel();
+////        Link userLink1= linkTo(methodOn(ClientController.class)
+////                .getClientById(userClientResponse.getClient().getId())).withSelfRel();
+//        userClientResponse.add(userLink);
+//        return new EntityModel<>(userClientResponse);
+//    }
 
 
-        Link userLink= linkTo(ClientController.class).slash(userClientResponse.getClient().getId()).withSelfRel();
-//        Link userLink1= linkTo(methodOn(ClientController.class)
-//                .getClientById(userClientResponse.getClient().getId())).withSelfRel();
-        userClientResponse.add(userLink);
-        return new EntityModel<>(userClientResponse);
-    }
+
 
 }

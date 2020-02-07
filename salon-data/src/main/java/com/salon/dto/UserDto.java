@@ -13,6 +13,15 @@ public class UserDto implements Serializable {
     private Boolean active=false;
     private Boolean userIsClient=true;
 
+//    private UserMainDto userMain;
+//
+//    public UserMainDto getUser() {
+//        return userMain;
+//    }
+//
+//    public void setUser(UserMainDto userMain) {
+//        this.userMain = userMain;
+//    }
 
     public Long getId() {
         return id;

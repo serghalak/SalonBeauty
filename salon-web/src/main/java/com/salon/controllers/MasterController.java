@@ -19,8 +19,8 @@ import java.util.Set;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-@RestController
-@RequestMapping("api/masters")
+//@RestController
+//@RequestMapping("api/masters")
 public class MasterController {
 
 
@@ -40,40 +40,40 @@ public class MasterController {
     }
 
 
-    @PostMapping(
-            path="/created"
-            ,consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
-            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public UserMasterResponse createMaster(
-            @RequestBody UserMasterRequest userMasterRequest ){
-
-
-        ModelMapper modelMapper=new ModelMapper();
-        UserMasterDto userMasterDto = modelMapper.map(userMasterRequest, UserMasterDto.class);
-
-        UserMasterDto createdUserMasterDto=userService.createUserMaster(userMasterDto);
-
-        UserMasterResponse userMasterResponse=modelMapper.map(createdUserMasterDto,UserMasterResponse.class);
-        return userMasterResponse;
-//        PropertyMap<UserRequest,UserDto>userMap=new PropertyMap<UserRequest, UserDto>() {
-//            @Override
-//            protected void configure() {
-//                map().setUserId(source.getUserId());
-//                map().setPassword(source.getPassword());
-//                map().setUserName(source.getUserName());
-//                map().setClient(source.isClient());
-//                map().setFirstName(source.getClientRequest().getFirstName());
-//                map().setLastName(source.getClientRequest().getLastName());
-//                map().setEmail(source.getClientRequest().getEmail());
-//                map().setPhoneNumber(source.getClientRequest().getPhoneNumber());
-//            }
-//        };
-
-
-
-
-        //return userMasterRequest;
-    }
+//    @PostMapping(
+//            path="/created"
+//            ,consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
+//            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+//    public UserMasterResponse createMaster(
+//            @RequestBody UserMasterRequest userMasterRequest ){
+//
+//
+//        ModelMapper modelMapper=new ModelMapper();
+//        UserMasterDto userMasterDto = modelMapper.map(userMasterRequest, UserMasterDto.class);
+//
+//        UserMasterDto createdUserMasterDto=userService.createUserMaster(userMasterDto);
+//
+//        UserMasterResponse userMasterResponse=modelMapper.map(createdUserMasterDto,UserMasterResponse.class);
+//        return userMasterResponse;
+////        PropertyMap<UserRequest,UserDto>userMap=new PropertyMap<UserRequest, UserDto>() {
+////            @Override
+////            protected void configure() {
+////                map().setUserId(source.getUserId());
+////                map().setPassword(source.getPassword());
+////                map().setUserName(source.getUserName());
+////                map().setClient(source.isClient());
+////                map().setFirstName(source.getClientRequest().getFirstName());
+////                map().setLastName(source.getClientRequest().getLastName());
+////                map().setEmail(source.getClientRequest().getEmail());
+////                map().setPhoneNumber(source.getClientRequest().getPhoneNumber());
+////            }
+////        };
+//
+//
+//
+//
+//        //return userMasterRequest;
+//    }
 
 //    @GetMapping(
 //            path="/{userName}"
