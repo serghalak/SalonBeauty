@@ -1,6 +1,6 @@
 package com.salon.ui.model.response;
 
 
-public class ClientResponse extends UserMainResponse {
+public class ClientResponse extends PersonResponse {
 
 }

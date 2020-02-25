@@ -8,9 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MasterRequest extends UserMainRequest{
+public class MasterRequest extends PersonRequest{
 
-    private Set<SpecializationRequest> specializations=new HashSet<>();//specializationRequests;
+    protected Set<SpecializationRequest> specializations=new HashSet<>();//specializationRequests;
 
     public Set<SpecializationRequest> getSpecializations() {
         return specializations;

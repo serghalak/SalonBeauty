@@ -1,15 +1,25 @@
-package com.salon.ui.model.response;
+package com.salon.ui.model.request;
 
 
-import org.springframework.hateoas.RepresentationModel;
+import java.io.Serializable;
 
-public class UserMainResponse extends RepresentationModel{
+public class PersonRequest implements Serializable/*extends UserRequest*/ {
 
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phoneNumber;
+    protected Long id;
+    protected String firstName;
+    protected String lastName;
+    protected String email;
+    protected String phoneNumber;
+
+    private UserRequest user;
+
+    public UserRequest getUser() {
+        return user;
+    }
+
+    public void setUser(UserRequest user) {
+        this.user = user;
+    }
 
     public Long getId() {
         return id;

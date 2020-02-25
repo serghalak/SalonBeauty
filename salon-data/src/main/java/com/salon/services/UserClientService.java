@@ -9,6 +9,9 @@ import java.util.Set;
 
 public interface UserClientService extends CrudService<UserClientDto,Long>{
 
+    //UserClientDto createUserClient(UserClientDto userClientDto);
+
+
 //    Set<UserClientDto> getUserClients(Integer page, Integer limit);
 //    UserClientDto getUserClientByUserId(String userId);
 //    ClientDto getClientByClientId(Long clientId);

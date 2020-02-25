@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MasterDto extends UserMainDto{
+public class MasterDto extends PersonDto{
 
     private Set<SpecializationDto> specializations
             =new HashSet<>();//specializationDtoList;

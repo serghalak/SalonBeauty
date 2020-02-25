@@ -42,10 +42,13 @@ public class UserController {
     private UserService userService;
 
     private MessageSource messageSource;
+    private ModelMapper modelMapper;
 
-    public UserController(UserService userService, MessageSource messageSource) {
+    public UserController(UserService userService
+            , MessageSource messageSource, ModelMapper modelMapper) {
         this.userService = userService;
         this.messageSource=messageSource;
+        this.modelMapper=modelMapper;
     }
 
     @GetMapping(
@@ -286,22 +289,22 @@ public class UserController {
 //    }
 
 
-//    @GetMapping("/activate/{code}")
-//    public UserResponse activate(@PathVariable("code")String code){
-//        UserResponse userResponse=new UserResponse();
-//        if(code==null){
-//            //throw new RuntimeException("code activation is wrong");
-//            String message=messageSource.getMessage(
-//                    "registration.user.activationcodewrong"
-//                    ,null,LocaleContextHolder.getLocale());
-//            throw new UserServiceException(message);
-//        }
-//
-//        UserClientDto userByCodeActivate = userService.getUserByCodeActivate(code);
-//        BeanUtils.copyProperties(userByCodeActivate,userResponse);
-//
-//        return userResponse;
-//    }
+    @GetMapping("/activate/{code}")
+    public UserResponse activate(@PathVariable("code")String code){
+
+        if(code==null){
+            String message=messageSource.getMessage(
+                    "registration.user.activationcodewrong"
+                    ,null,LocaleContextHolder.getLocale());
+            throw new UserServiceException(message);
+        }
+
+
+        UserDto userByCodeActivate = userService.getUserByCodeActivate(code);
+        UserResponse returnValue = convertToUserResponse(userByCodeActivate);
+
+        return returnValue;
+    }
 
 
 
@@ -309,5 +312,9 @@ public class UserController {
     @PutMapping("/put")
     public String testPut(){
         return "from /put";
+    }
+
+    private UserResponse convertToUserResponse(UserDto userDto){
+        return modelMapper.map(userDto,UserResponse.class);
     }
 }

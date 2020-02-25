@@ -13,9 +13,9 @@ import java.util.List;
 @Repository
 public interface MasterRepo extends PagingAndSortingRepository<Master,Long> {
 
-    List<Master> findMasterByFirstName(String firstName);
-    List<Master>findMasterByLastName(String lastName);
-    List<Master>findMasterBySpecializations(Specialization specialization);
+//    List<Master> findMasterByFirstName(String firstName);
+//    List<Master>findMasterByLastName(String lastName);
+//    List<Master>findMasterBySpecializations(Specialization specialization);
     //User findMasterByUser(Master master);
 
 }

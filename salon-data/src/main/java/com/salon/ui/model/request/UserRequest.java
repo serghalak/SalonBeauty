@@ -1,16 +1,19 @@
 package com.salon.ui.model.request;
 
+import com.salon.domain.Authority;
 import com.salon.domain.Client;
 import com.salon.domain.Person;
 import com.salon.domain.PersonExt;
 
 public class UserRequest /*extends Person *//*PersonExt*/ {
 
-    private String userId;
-    private String password;
-    private String userName;
+    protected String userId;
+    protected String password;
+    protected String userName;
 
-    private boolean userIsClient=true;
+    protected AuthorityRequest authority;
+
+    protected boolean userIsClient=true;
 
     public String getUserId() {
         return userId;
@@ -42,5 +45,13 @@ public class UserRequest /*extends Person *//*PersonExt*/ {
 
     public void setUserIsClient(boolean userIsClient) {
         this.userIsClient = userIsClient;
+    }
+
+    public AuthorityRequest getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(AuthorityRequest authority) {
+        this.authority = authority;
     }
 }

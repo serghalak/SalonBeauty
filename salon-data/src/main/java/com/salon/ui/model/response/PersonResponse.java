@@ -1,15 +1,26 @@
-package com.salon.dto;
-
-import java.io.Serializable;
+package com.salon.ui.model.response;
 
 
-public class UserMainDto implements Serializable {
+import org.springframework.hateoas.RepresentationModel;
+
+public class PersonResponse /*extends UserResponse*/{
 
     private Long id;
-    private String email;
     private String firstName;
     private String lastName;
+    private String email;
     private String phoneNumber;
+
+
+    private UserResponse user;
+
+    public UserResponse getUser() {
+        return user;
+    }
+
+    public void setUser(UserResponse user) {
+        this.user = user;
+    }
 
     public Long getId() {
         return id;
@@ -17,14 +28,6 @@ public class UserMainDto implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getFirstName() {
@@ -41,6 +44,14 @@ public class UserMainDto implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhoneNumber() {

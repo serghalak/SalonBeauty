@@ -1,5 +1,7 @@
 package com.salon.dto;
 
+import com.salon.domain.Authority;
+
 import java.io.Serializable;
 
 
@@ -13,15 +15,8 @@ public class UserDto implements Serializable {
     private Boolean active=false;
     private Boolean userIsClient=true;
 
-//    private UserMainDto userMain;
-//
-//    public UserMainDto getUser() {
-//        return userMain;
-//    }
-//
-//    public void setUser(UserMainDto userMain) {
-//        this.userMain = userMain;
-//    }
+    private AuthorityDto authority;
+
 
     public Long getId() {
         return id;
@@ -77,5 +72,13 @@ public class UserDto implements Serializable {
 
     public void setUserIsClient(Boolean userIsClient) {
         this.userIsClient = userIsClient;
+    }
+
+    public AuthorityDto getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(AuthorityDto authority) {
+        this.authority = authority;
     }
 }

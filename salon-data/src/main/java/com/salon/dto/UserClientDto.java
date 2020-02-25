@@ -1,17 +1,26 @@
 package com.salon.dto;
 
+import java.io.Serializable;
 
+public class UserClientDto  implements Serializable/*extends PersonDto*/{
 
+    private PersonDto person;
 
-public class UserClientDto  extends UserDto{
-
-    private ClientDto client;
-
-    public ClientDto getClient() {
-        return client;
+    public PersonDto getPerson() {
+        return person;
     }
 
-    public void setClient(ClientDto client) {
-        this.client = client;
+    public void setPerson(PersonDto person) {
+        this.person = person;
     }
+
+    //    private ClientDto client;
+//
+//    public ClientDto getClient() {
+//        return client;
+//    }
+//
+//    public void setClient(ClientDto client) {
+//        this.client = client;
+//    }
 }

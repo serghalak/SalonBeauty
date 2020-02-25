@@ -29,17 +29,20 @@ public class UserServiceImpl implements UserService{
     protected MessageSource messageSource;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private Utils utils;
-    private RegistrationLink registrationLink;
+    //private RegistrationLink registrationLink;
     private MailSender mailSender;
+    private ModelMapper modelMapper;
 
     public UserServiceImpl(UserRepo userRepo, MessageSource messageSource
             ,BCryptPasswordEncoder bCryptPasswordEncoder
-            ,Utils utils, RegistrationLink registrationLink) {
+            ,Utils utils, /*RegistrationLink registrationLink,*/ MailSender mailSender,ModelMapper modelMapper) {
         this.userRepo = userRepo;
         this.messageSource = messageSource;
         this.bCryptPasswordEncoder=bCryptPasswordEncoder;
         this.utils=utils;
-        this.registrationLink=registrationLink;
+        /*this.registrationLink=registrationLink;*/
+        this.mailSender=mailSender;
+        this.modelMapper=modelMapper;
     }
 
     @Override
@@ -83,6 +86,35 @@ public class UserServiceImpl implements UserService{
 //        }
 //        return getUser(userDb.getUserName());
         return null;
+    }
+
+    @Override
+    public UserDto getUserByCodeActivate(String code) {
+
+        User byActivateCode = userRepo.findByActivateCode(code);
+        if(byActivateCode==null){
+            String message = messageSource.getMessage(
+                    "registration.user.activationcodewrong"
+                    ,null,LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
+
+        }
+
+        byActivateCode.setActivateCode("");
+        byActivateCode.setActive(true);
+        User userActivated=userRepo.save(byActivateCode);
+        if(userActivated==null){
+            String message = messageSource.getMessage(
+                    "registration.user.activationerror"
+                    ,null,LocaleContextHolder.getLocale());
+            throw new RuntimeException(message);
+        }
+
+
+        UserDto returnValue=convertToUserDto(userActivated);
+        mailSender.sendEmailSuccessRegistation(userActivated.getPerson().getEmail());
+
+        return returnValue;
     }
 
     @Override
@@ -258,5 +290,13 @@ public class UserServiceImpl implements UserService{
 //        }
 //        return userByUserName;
         return null;
+    }
+
+    private User convertToUser(UserDto userDto){
+        return modelMapper.map(userDto,User.class);
+    }
+
+    private UserDto convertToUserDto(User user){
+        return modelMapper.map(user,UserDto.class);
     }
 }

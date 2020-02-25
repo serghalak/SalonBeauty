@@ -1,13 +1,25 @@
-package com.salon.ui.model.request;
+package com.salon.dto;
+
+import java.io.Serializable;
 
 
-public class UserMainRequest {
+public class PersonDto implements Serializable /*extends UserDto*/ {
 
     private Long id;
+    private String email;
     private String firstName;
     private String lastName;
-    private String email;
     private String phoneNumber;
+
+    private UserDto user;
+
+    public UserDto getUser() {
+        return user;
+    }
+
+    public void setUser(UserDto user) {
+        this.user = user;
+    }
 
     public Long getId() {
         return id;
@@ -15,6 +27,14 @@ public class UserMainRequest {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstName() {
@@ -31,14 +51,6 @@ public class UserMainRequest {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPhoneNumber() {

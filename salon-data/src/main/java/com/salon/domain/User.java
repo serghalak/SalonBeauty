@@ -46,7 +46,7 @@ public class User extends IdEntity implements UserDetails {
 //    @Column(nullable = false,unique = true,length =100 )
 //    private String encryptedPassword;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "authority_id",referencedColumnName = "id")
     private Authority authority;
 
@@ -63,8 +63,11 @@ public class User extends IdEntity implements UserDetails {
 //    @JoinColumn(name = "master_id",referencedColumnName = "id")
 //    private Master master;
 
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "person_id",referencedColumnName = "id")
+//    @OneToOne(cascade = {CascadeType.ALL},mappedBy = "user")
+//    @JoinColumn(name = "person_id",referencedColumnName = "id")
+//    private Person person;
+
+    @OneToOne(cascade = {CascadeType.ALL},mappedBy = "user")
     private Person person;
 
     public Person getPerson() {

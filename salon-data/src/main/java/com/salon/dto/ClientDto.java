@@ -3,7 +3,7 @@ package com.salon.dto;
 import java.io.Serializable;
 
 
-public class ClientDto extends UserMainDto {
+public class ClientDto extends PersonDto {
 
 
 }

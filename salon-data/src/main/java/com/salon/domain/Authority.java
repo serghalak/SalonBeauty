@@ -24,7 +24,7 @@ public class Authority  extends IdEntity
     //@Column
     private String roleName;
 
-    @OneToMany(mappedBy = "authority")
+    @OneToMany(cascade = {CascadeType.ALL},mappedBy = "authority")
     private Set<User> users=new HashSet<>();
 
 

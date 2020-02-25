@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class MasterResponse extends UserMainResponse {
+public class MasterResponse extends PersonResponse {
 
 
 

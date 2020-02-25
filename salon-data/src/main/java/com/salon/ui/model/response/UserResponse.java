@@ -1,15 +1,26 @@
 package com.salon.ui.model.response;
 
+import com.salon.domain.Authority;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.io.Serializable;
 
 
-public class UserResponse extends RepresentationModel  /*extends Person*/ /*PersonExt*/{
+public class UserResponse  extends RepresentationModel /*extends Person*/ /*PersonExt*/{
 
-    private String userId;
-    private String userName;
-    private Boolean active;
-    private Boolean userIsClient=true;
+    protected String userId;
+    protected String userName;
+    protected Boolean active;
+    protected Boolean userIsClient=true;
+    protected Authority authority;
+
+    public Authority getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(Authority authority) {
+        this.authority = authority;
+    }
 
     public String getUserId() {
         return userId;

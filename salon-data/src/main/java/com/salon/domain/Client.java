@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Client extends IdEntity /*PersonExtId*/ {
+public class Client extends IdEntity  {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO)

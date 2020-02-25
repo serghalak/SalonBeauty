@@ -12,13 +12,17 @@ public class Person extends IdEntity{
     private String email;
 
 
-    @OneToOne(mappedBy = "person")
+//    @OneToOne(cascade = {CascadeType.ALL},mappedBy = "person")
+//    private User user;
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
 
-    @OneToOne(mappedBy = "person")
+    @OneToOne(cascade = {CascadeType.ALL},mappedBy = "person")
     private Client client;
 
-    @OneToOne(mappedBy = "person")
+    @OneToOne(cascade = {CascadeType.ALL},mappedBy = "person")
     private Master master;
 
 

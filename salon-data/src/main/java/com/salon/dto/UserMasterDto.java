@@ -1,19 +1,40 @@
 package com.salon.dto;
 
 import java.io.Serializable;
+import java.util.Set;
 
 
-public class UserMasterDto extends UserDto {
+public class UserMasterDto implements  Serializable /*extends PersonDto*/ {
 
 
-    private MasterDto master;//Dto;
+    private PersonDto person;
 
-
-    public MasterDto getMaster() {
-        return master;
+    public PersonDto getPerson() {
+        return person;
     }
 
-    public void setMaster(MasterDto master) {
-        this.master = master;
+    public void setPerson(PersonDto person) {
+        this.person = person;
     }
+
+    private Set<SpecializationDto>specializations;
+
+    public Set<SpecializationDto> getSpecializations() {
+        return specializations;
+    }
+
+    public void setSpecializations(Set<SpecializationDto> specializations) {
+        this.specializations = specializations;
+    }
+
+    //    private MasterDto master;//Dto;
+//
+//
+//    public MasterDto getMaster() {
+//        return master;
+//    }
+//
+//    public void setMaster(MasterDto master) {
+//        this.master = master;
+//    }
 }

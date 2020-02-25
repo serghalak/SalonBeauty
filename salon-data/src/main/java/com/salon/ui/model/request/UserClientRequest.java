@@ -1,15 +1,27 @@
 package com.salon.ui.model.request;
 
 
-public class UserClientRequest extends UserRequest {
+import java.io.Serializable;
 
-    private ClientRequest client;
+public class UserClientRequest implements Serializable/*extends UserRequest*//*extends PersonRequest*/ {
 
-    public ClientRequest getClient() {
-        return client;
+    private PersonRequest person;
+
+    public PersonRequest getPerson() {
+        return person;
     }
 
-    public void setClient(ClientRequest client) {
-        this.client = client;
+    public void setPerson(PersonRequest person) {
+        this.person = person;
     }
+
+    //    private ClientRequest client;
+//
+//    public ClientRequest getClient() {
+//        return client;
+//    }
+//
+//    public void setClient(ClientRequest client) {
+//        this.client = client;
+//    }
 }

@@ -1,8 +1,11 @@
 package com.salon.controllers;
 
+import com.salon.domain.Client;
 import com.salon.dto.UserClientDto;
 import com.salon.exceptions.UserServiceException;
+import com.salon.services.UserClientService;
 import com.salon.services.UserService;
+import com.salon.ui.model.request.UserClientRequest;
 import com.salon.ui.model.response.ClientResponse;
 import com.salon.ui.model.response.UserClientResponse;
 import com.salon.ui.model.response.UserResponse;
@@ -25,17 +28,101 @@ import java.util.Set;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-//@RestController
-//@RequestMapping("api/users/client")
+@RestController
+@RequestMapping("api/users/client")
 public class UserClientController {
 
-    private UserService userService;
+    private UserClientService userClientService;
     private MessageSource messageSource;
+    private ModelMapper modelMapper;
 
-    public UserClientController(UserService userService, MessageSource messageSource) {
-        this.userService = userService;
+    public UserClientController(UserClientService userClientService
+            , MessageSource messageSource,  ModelMapper modelMapper) {
+        this.userClientService = userClientService;
         this.messageSource = messageSource;
+        this.modelMapper=modelMapper;
     }
+    /*create user client*/
+
+    @PostMapping(
+            consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
+            , produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
+    public UserClientResponse createUserClient(
+            @RequestBody UserClientRequest userClientRequest){
+
+        if(userClientRequest==null){
+            String message=messageSource.getMessage(
+                    "user.usernotset",null
+                    ,LocaleContextHolder.getLocale());
+            throw new UserServiceException(message);
+        }
+        if(userClientRequest.getPerson().getLastName()==null
+                || userClientRequest.getPerson().getLastName().equals("")){
+            String message=messageSource.getMessage(
+                    "registration.user.lastnameisempty",null
+                    ,LocaleContextHolder.getLocale());
+            throw new UserServiceException(message);
+        }
+
+        if(userClientRequest.getPerson().getUser().getUserName().equals("")
+                || userClientRequest.getPerson().getFirstName().equals("")
+                || userClientRequest.getPerson().getEmail().equals("")
+                || userClientRequest.getPerson().getPhoneNumber().equals("")
+                || userClientRequest.getPerson().getUser().getPassword().equals("")
+                || userClientRequest.getPerson().getLastName().equals("")){
+            String message=messageSource.getMessage(
+                    "registration.user.requiredfields",null
+                    ,LocaleContextHolder.getLocale());
+            throw new UserServiceException(message);
+        }
+
+
+        //UserClientResponse userClientResponse=new UserClientResponse();
+
+        //replace these two lines on the ModelMapper
+        //UserClientDto userDto = new UserClientDto();
+        //ModelMapper modelMapper=new ModelMapper();
+        //UserClientDto userClientDto = modelMapper.map(userClientRequest, UserClientDto.class);
+        UserClientDto userClientDto=convertToDto(userClientRequest);
+
+//        ModelMapper modelMapper=new ModelMapper();
+//        PropertyMap<UserRequest,UserDto>userMap=new PropertyMap<UserRequest, UserDto>() {
+//            @Override
+//            protected void configure() {
+//                map().setUserId(source.getUserId());
+//                map().setPassword(source.getPassword());
+//                map().setUserName(source.getUserName());
+//                map().setClient(source.isClient());
+//                map().setFirstName(source.getClientRequest().getFirstName());
+//                map().setLastName(source.getClientRequest().getLastName());
+//                map().setEmail(source.getClientRequest().getEmail());
+//                map().setPhoneNumber(source.getClientRequest().getPhoneNumber());
+//            }
+//        };
+//
+//        UserDto userDto=modelMapper.map(userRequest,UserDto.class);
+
+
+        //System.out.println("-------------------------------");
+//        Client client=null;
+//
+//        if(userRequest.isClient()){
+//            client=new Client();
+//            //client.setFirstName(userRequest.getFirstName());
+//            BeanUtils.copyProperties(userDto,client);
+//
+//        }
+
+        UserClientDto createdUser=userClientService.save(userClientDto);
+        //UserClientResponse returnValue = modelMapper.map(createdUser, UserClientResponse.class);
+        UserClientResponse returnValue=convertToResponse(createdUser);
+        return returnValue;
+    }
+
+     /* end create client*/
+
+
+
 
 //    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE
 //            ,MediaType.APPLICATION_XML_VALUE, "application/hal+json"})
@@ -109,6 +196,11 @@ public class UserClientController {
 //    }
 
 
+    private UserClientDto convertToDto(UserClientRequest userClientRequest) {
+        return modelMapper.map(userClientRequest,UserClientDto.class);
+    }
 
-
+    private UserClientResponse convertToResponse(UserClientDto userClientDto) {
+        return modelMapper.map(userClientDto,UserClientResponse.class);
+    }
 }
