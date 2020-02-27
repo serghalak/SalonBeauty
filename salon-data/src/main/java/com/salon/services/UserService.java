@@ -25,7 +25,8 @@ public interface UserService extends UserDetailsService,CrudService<UserDto,Long
 //    UserClientDto getUser(String userName);
 
 //    UserClientDto updateUser(UserClientDto user);
-      UserDto getUserByCodeActivate(String code);
+      //UserDto getUserByCodeActivate(String code);
+      UserDto activateUser(String activateCode);
       //void deleteUser(UserClientDto user);
     //-----------------------------------------------------
 

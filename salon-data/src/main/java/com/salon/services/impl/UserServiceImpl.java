@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.*;
 
 @Service
@@ -89,32 +90,41 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto getUserByCodeActivate(String code) {
+    public UserDto activateUser(String activateCode) {
+        User userByCodeActivate = getUserByCodeActivate(activateCode);
+        User userActivated = saveChange(userByCodeActivate);
+        sendLetter(userActivated.getPerson().getEmail());
+        UserDto returnValue=convertToUserDto(userActivated);
+        return returnValue;
+    }
 
+
+    private User saveChange(User userByActivateCode){
+        userByActivateCode.setActivateCode("");
+        userByActivateCode.setActive(true);
+        User userActivated=userRepo.save(userByActivateCode);
+        if(userActivated==null){
+            String message = messageSource.getMessage(
+                    "registration.user.activationerror"
+                    ,null,LocaleContextHolder.getLocale());
+            throw new UsernameNotFoundException(message);
+        }
+        return userActivated;
+    }
+
+    private void  sendLetter(String email){
+        mailSender.sendEmailSuccessRegistation(email);
+    }
+    private User getUserByCodeActivate(String code) {
         User byActivateCode = userRepo.findByActivateCode(code);
         if(byActivateCode==null){
             String message = messageSource.getMessage(
                     "registration.user.activationcodewrong"
                     ,null,LocaleContextHolder.getLocale());
-            throw new RuntimeException(message);
+            throw new UsernameNotFoundException(message);
 
         }
-
-        byActivateCode.setActivateCode("");
-        byActivateCode.setActive(true);
-        User userActivated=userRepo.save(byActivateCode);
-        if(userActivated==null){
-            String message = messageSource.getMessage(
-                    "registration.user.activationerror"
-                    ,null,LocaleContextHolder.getLocale());
-            throw new RuntimeException(message);
-        }
-
-
-        UserDto returnValue=convertToUserDto(userActivated);
-        mailSender.sendEmailSuccessRegistation(userActivated.getPerson().getEmail());
-
-        return returnValue;
+        return byActivateCode;
     }
 
     @Override

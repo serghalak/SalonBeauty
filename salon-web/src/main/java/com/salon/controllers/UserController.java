@@ -300,7 +300,7 @@ public class UserController {
         }
 
 
-        UserDto userByCodeActivate = userService.getUserByCodeActivate(code);
+        UserDto userByCodeActivate = userService.activateUser(code);
         UserResponse returnValue = convertToUserResponse(userByCodeActivate);
 
         return returnValue;
